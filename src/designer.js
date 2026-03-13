@@ -220,43 +220,72 @@ function getPolicyRiskTargets(policyId) {
 }
 
 function computeCoverage(enabledPolicies) {
-  // Collect all addressed causes/problems from enabled policies
   const allAddressed = new Set();
-  const allRiskTargets = new Set();
   const policyContributions = {}; // problemId → [policyId, ...]
-
   const hinderingContributions = {}; // problemId → [policyId, ...]
+
+  // Per-policy chain details for problem dashboard
+  // policyChains[problemId] = [{ policyId, helpChains: [...], hinderChains: [...] }]
+  const policyChains = {};
 
   enabledPolicies.forEach(polId => {
     const addressed = getPolicyAddressedCauses(polId);
     addressed.forEach(id => allAddressed.add(id));
 
-    const riskTargets = getPolicyRiskTargets(polId);
-    riskTargets.forEach(id => allRiskTargets.add(id));
-
-    // Track which policies hinder which problems (via risks)
-    riskTargets.forEach(targetId => {
-      const targetNode = nodeMap[targetId];
-      if (targetNode && targetNode.type === 'problem') {
-        (hinderingContributions[targetId] ??= []).push(polId);
-      }
-      // Also follow causes from risk targets to problems
-      const downstream = causesEdges[targetId] || [];
-      downstream.forEach(probId => {
-        const probNode = nodeMap[probId];
-        if (probNode && probNode.type === 'problem') {
-          (hinderingContributions[probId] ??= []).push(polId);
-        }
-      });
-    });
-
-    // Track which policies help which problems
+    // Track which policies help which problems + build help chains
     const impact = policyImpacts[polId];
     if (impact) {
       impact.problemsAddressed.forEach(probId => {
         (policyContributions[probId] ??= []).push(polId);
       });
+
+      // Build help chain details per problem
+      (impact.solutions || []).forEach(solId => {
+        const sol = nodeMap[solId];
+        if (!sol) return;
+        const solLabel = sol.label.replace(/\n/g, ' ');
+        const targets = solvesEdges[solId] || [];
+        targets.forEach(targetId => {
+          const target = nodeMap[targetId];
+          if (!target) return;
+          if (target.type === 'problem') {
+            const chain = { text: `implements <b>${solLabel}</b> → solves`, type: 'helps' };
+            addPolicyChain(policyChains, targetId, polId, chain, 'help');
+          } else if (target.type === 'cause') {
+            const downstream = causesEdges[targetId] || [];
+            downstream.forEach(pid => {
+              if (nodeMap[pid]?.type === 'problem') {
+                const targetLabel = target.label.replace(/\n/g, ' ');
+                const chain = { text: `implements <b>${solLabel}</b> → addresses <b>${targetLabel}</b>`, type: 'helps' };
+                addPolicyChain(policyChains, pid, polId, chain, 'help');
+              }
+            });
+          }
+        });
+      });
     }
+
+    // Track which policies hinder which problems + build hinder chains
+    const risks = risksEdges[polId] || [];
+    risks.forEach(fpId => {
+      const fp = nodeMap[fpId];
+      if (!fp) return;
+      const fpLabel = fp.label.replace(/\n/g, ' ');
+
+      if (fp.type === 'problem') {
+        (hinderingContributions[fpId] ??= []).push(polId);
+        const chain = { text: `risks <b>${fpLabel}</b>`, type: 'hinders' };
+        addPolicyChain(policyChains, fpId, polId, chain, 'hinder');
+      }
+      const downstream = causesEdges[fpId] || [];
+      downstream.forEach(probId => {
+        if (nodeMap[probId]?.type === 'problem') {
+          (hinderingContributions[probId] ??= []).push(polId);
+          const chain = { text: `risks <b>${fpLabel}</b> → worsens`, type: 'hinders' };
+          addPolicyChain(policyChains, probId, polId, chain, 'hinder');
+        }
+      });
+    });
   });
 
   const results = {};
@@ -271,23 +300,33 @@ function computeCoverage(enabledPolicies) {
 
     let coverage = Math.min(100, (addressedCount / totalCauses) * 100);
 
-    const isRiskTarget = allRiskTargets.has(problem.id);
-    const hindrance = isRiskTarget ? 15 : 0;
-    if (isRiskTarget && coverage > 0) {
-      coverage = Math.max(0, coverage - hindrance);
-    }
-
-    const helpingPolicies = policyContributions[problem.id] || [];
+    const helpingPolicies = [...new Set(policyContributions[problem.id] || [])];
     const hinderingPolicies = [...new Set(hinderingContributions[problem.id] || [])];
-    let direction = 'unchanged';
-    if (helpingPolicies.length > 0 && !isRiskTarget) direction = 'improving';
-    else if (isRiskTarget && helpingPolicies.length === 0) direction = 'worsening';
-    else if (isRiskTarget && helpingPolicies.length > 0) direction = 'mixed';
+    const isHindered = hinderingPolicies.length > 0;
+    const hindrance = isHindered ? Math.min(50, hinderingPolicies.length * 10) : 0;
 
-    results[problem.id] = { coverage, direction, helpingPolicies, hinderingPolicies, isRiskTarget, hindrance };
+    let direction = 'unchanged';
+    if (helpingPolicies.length > 0 && !isHindered) direction = 'improving';
+    else if (isHindered && helpingPolicies.length === 0) direction = 'worsening';
+    else if (isHindered && helpingPolicies.length > 0) direction = 'mixed';
+
+    const chains = policyChains[problem.id] || [];
+
+    results[problem.id] = { coverage, direction, helpingPolicies, hinderingPolicies, hindrance, chains };
   });
 
   return results;
+}
+
+function addPolicyChain(policyChains, problemId, policyId, chain, type) {
+  if (!policyChains[problemId]) policyChains[problemId] = [];
+  let entry = policyChains[problemId].find(e => e.policyId === policyId);
+  if (!entry) {
+    entry = { policyId, helpChains: [], hinderChains: [] };
+    policyChains[problemId].push(entry);
+  }
+  if (type === 'help') entry.helpChains.push(chain);
+  else entry.hinderChains.push(chain);
 }
 
 // === Max severity (for normalising bars) ===
@@ -374,41 +413,13 @@ function renderPolicyList() {
       feasHtml = `<span class="feasibility-mini">⚙️ ${policy.practicality}/5</span>`;
     }
 
-    // Impact chain reasoning
-    let chainHtml = '';
-    const chains = [];
-    (impact.solutions || []).forEach(solId => {
-      const sol = nodeMap[solId];
-      if (!sol) return;
-      const solLabel = sol.label.replace(/\n/g, ' ');
-      const targets = solvesEdges[solId] || [];
-      targets.forEach(targetId => {
-        const target = nodeMap[targetId];
-        if (!target) return;
-        const targetLabel = target.label.replace(/\n/g, ' ');
-        if (target.type === 'problem') {
-          chains.push(`<span class="chain-line helps">✅ implements <b>${solLabel}</b> → solves <b>${targetLabel}</b></span>`);
-        } else if (target.type === 'cause') {
-          // Find downstream problems
-          const downstream = causesEdges[targetId] || [];
-          const probNames = downstream.map(pid => nodeMap[pid]?.label?.replace(/\n/g, ' ')).filter(Boolean);
-          const via = probNames.length ? ` → helps ${probNames.map(n => `<b>${n}</b>`).join(', ')}` : '';
-          chains.push(`<span class="chain-line helps">✅ implements <b>${solLabel}</b> → addresses <b>${targetLabel}</b>${via}</span>`);
-        }
-      });
-    });
-    (impact.risksCreated || []).forEach(fpId => {
-      const fp = nodeMap[fpId];
-      if (!fp) return;
-      const fpLabel = fp.label.replace(/\n/g, ' ');
-      const downstream = causesEdges[fpId] || [];
-      const probNames = downstream.map(pid => nodeMap[pid]?.label?.replace(/\n/g, ' ')).filter(Boolean);
-      const via = probNames.length ? ` → worsens ${probNames.map(n => `<b>${n}</b>`).join(', ')}` : '';
-      chains.push(`<span class="chain-line hinders">⚠️ risks <b>${fpLabel}</b>${via}</span>`);
-    });
-    if (chains.length) {
-      chainHtml = `<div class="impact-chains">${chains.join('')}</div>`;
-    }
+    // Summary of what it addresses
+    const solvedCount = (impact.problemsAddressed || []).length;
+    const riskCount = (impact.risksCreated || []).length;
+    let summaryBits = [];
+    if (solvedCount > 0) summaryBits.push(`<span class="chain-summary helps">✅ ${solvedCount} problem${solvedCount > 1 ? 's' : ''}</span>`);
+    if (riskCount > 0) summaryBits.push(`<span class="chain-summary hinders">⚠️ ${riskCount} risk${riskCount > 1 ? 's' : ''}</span>`);
+    const summaryHtml = summaryBits.length ? `<div class="impact-summary">${summaryBits.join(' ')}</div>` : '';
 
     return `
       <div class="policy-card ${isEnabled ? 'enabled' : ''}" data-id="${policy.id}">
@@ -432,7 +443,7 @@ function renderPolicyList() {
           <div class="party-dots">${partyDotsHtml}</div>
           ${feasHtml}
         </div>
-        ${chainHtml}
+        ${summaryHtml}
       </div>
     `;
   }).join('');
@@ -466,7 +477,7 @@ function renderProblemDashboard() {
   problemListEl.innerHTML = sorted.map(problem => {
     const sev = problemSeverity[problem.id] || 0;
     const severityPct = (sev / maxSeverity) * 100;
-    const cov = coverage[problem.id] || { coverage: 0, direction: 'unchanged', helpingPolicies: [], hinderingPolicies: [], hindrance: 0 };
+    const cov = coverage[problem.id] || { coverage: 0, direction: 'unchanged', helpingPolicies: [], hinderingPolicies: [], hindrance: 0, chains: [] };
     const directionIcon = { improving: '↗️', worsening: '↘️', mixed: '⚖️', unchanged: '➡️' }[cov.direction];
     const directionClass = cov.direction;
 
@@ -475,22 +486,27 @@ function renderProblemDashboard() {
     const residualPct = severityPct * (1 - netReduction / 100);
     const hindrancePct = Math.min(severityPct, severityPct * cov.hindrance / 100);
 
-    let helpHtml = '';
-    if (cov.helpingPolicies.length > 0) {
-      const names = cov.helpingPolicies.map(id => {
-        const n = nodeMap[id];
-        return n ? `<span class="helped-policy">${n.label.replace(/\n/g, ' ')}</span>` : '';
-      }).filter(Boolean).join(', ');
-      helpHtml = `<div class="problem-policies helped">✅ Helped by: ${names}</div>`;
-    }
+    // Only show change if rounded values actually differ
+    const hasVisibleChange = (cov.coverage > 0 || cov.hindrance > 0) && Math.round(severityPct) !== Math.round(residualPct);
+    const hasAnyEffect = cov.coverage > 0 || cov.hindrance > 0;
 
-    let hinderHtml = '';
-    if (cov.hinderingPolicies.length > 0) {
-      const names = cov.hinderingPolicies.map(id => {
-        const n = nodeMap[id];
-        return n ? `<span class="hindered-policy">${n.label.replace(/\n/g, ' ')}</span>` : '';
-      }).filter(Boolean).join(', ');
-      hinderHtml = `<div class="problem-policies hindered">⚠️ Hindered by: ${names}</div>`;
+    // Build per-policy impact chains for this problem
+    let chainsHtml = '';
+    if (cov.chains && cov.chains.length > 0) {
+      const chainItems = cov.chains.map(entry => {
+        const polNode = nodeMap[entry.policyId];
+        if (!polNode) return '';
+        const polLabel = polNode.label.replace(/\n/g, ' ');
+        const lines = [];
+        entry.helpChains.forEach(c => {
+          lines.push(`<span class="chain-line helps">✅ ${c.text}</span>`);
+        });
+        entry.hinderChains.forEach(c => {
+          lines.push(`<span class="chain-line hinders">⚠️ ${c.text}</span>`);
+        });
+        return `<div class="problem-policy-impact"><span class="policy-impact-name">${polLabel}</span>${lines.join('')}</div>`;
+      }).filter(Boolean).join('');
+      chainsHtml = `<div class="problem-impact-chains">${chainItems}</div>`;
     }
 
     return `
@@ -502,17 +518,16 @@ function renderProblemDashboard() {
         <div class="severity-composite">
           <span class="problem-bar-label">Severity</span>
           <div class="severity-track">
-            ${cov.coverage > 0 || cov.hindrance > 0
+            ${hasAnyEffect
               ? `<div class="severity-baseline" style="width:${severityPct}%"></div>
                  <div class="severity-residual" style="width:${residualPct}%"></div>
                  ${cov.hindrance > 0 ? `<div class="severity-hindrance" style="left:${severityPct}%; width:${hindrancePct}%"></div>` : ''}`
               : `<div class="severity-residual" style="width:${severityPct}%"></div>`
             }
           </div>
-          <span class="problem-bar-value">${cov.coverage > 0 || cov.hindrance > 0 ? `${severityPct.toFixed(0)}→${residualPct.toFixed(0)}%` : `${severityPct.toFixed(0)}%`}</span>
+          <span class="problem-bar-value">${hasVisibleChange ? `${severityPct.toFixed(0)}→${residualPct.toFixed(0)}%` : `${severityPct.toFixed(0)}%`}</span>
         </div>
-        ${helpHtml}
-        ${hinderHtml}
+        ${chainsHtml}
       </div>
     `;
   }).join('');

@@ -645,6 +645,16 @@ header h1 {
   border-top: 1px solid #2a2a4a;
 }
 
+.impact-summary {
+  margin-top: 6px;
+  display: flex;
+  gap: 8px;
+  font-size: 0.72rem;
+}
+
+.chain-summary.helps { color: #2ecc71aa; }
+.chain-summary.hinders { color: #e74c3caa; }
+
 .chain-line {
   font-size: 0.7rem;
   line-height: 1.4;
@@ -897,19 +907,38 @@ header h1 {
   white-space: nowrap;
 }
 
-.problem-policies {
-  margin-top: 6px;
-  font-size: 0.72rem;
-  color: #666;
-  line-height: 1.5;
+.problem-impact-chains {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.problem-policies.helped span.helped-policy {
-  color: #2ecc71;
+.problem-policy-impact {
+  padding: 6px 8px;
+  background: #1a1a2e;
+  border-radius: 6px;
+  border-left: 3px solid #333;
 }
 
-.problem-policies.hindered span.hindered-policy {
-  color: #e74c3c;
+.problem-policy-impact .policy-impact-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ccc;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.problem-row.improving .problem-policy-impact {
+  border-left-color: #2ecc7155;
+}
+
+.problem-row.worsening .problem-policy-impact {
+  border-left-color: #e74c3c55;
+}
+
+.problem-row.mixed .problem-policy-impact {
+  border-left-color: #f39c1255;
 }
 
 .enabled-count-badge {
