@@ -352,7 +352,21 @@ const cy = cytoscape({
   layout: { name: 'preset' },
   minZoom: 0.15,
   maxZoom: 3,
+  zoomingEnabled: true,
+  userZoomingEnabled: false, // we handle wheel zoom ourselves
 });
+
+// Logarithmic zoom: constant perceived speed at any zoom level
+cy.on('scrollzoom', () => {}); // no-op
+const cyContainer = document.getElementById('cy');
+cyContainer.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const zoom = cy.zoom();
+  // Log-scale: step size proportional to current zoom
+  const factor = 1 - e.deltaY * 0.001;
+  const newZoom = Math.max(0.15, Math.min(3, zoom * factor));
+  cy.zoom({ level: newZoom, renderedPosition: { x: e.offsetX, y: e.offsetY } });
+}, { passive: false });
 
 // Run layout after construction so we can reference `cy` in the stop callback
 cy.layout({
