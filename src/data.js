@@ -1930,6 +1930,8 @@ export const edges = [
   { source: 'future_encryption_weakening', target: 'future_civil_liberties', label: 'causes' },
   { source: 'future_id_fraud_risk', target: 'crime_social', label: 'causes' },
   { source: 'future_id_fraud_risk', target: 'cost_of_living', label: 'causes' },
+  { source: 'future_id_fraud_risk', target: 'poverty_deprivation', label: 'causes' },
+  { source: 'future_id_fraud_risk', target: 'mental_health_crisis', label: 'causes' },
   { source: 'future_uk_tech_exodus', target: 'low_growth', label: 'causes' },
   { source: 'future_uk_tech_exodus', target: 'low_investment', label: 'causes' },
   { source: 'future_uk_tech_exodus', target: 'low_productivity', label: 'causes' },

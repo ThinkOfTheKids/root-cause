@@ -302,8 +302,9 @@ function computeCoverage(enabledPolicies) {
 
     const helpingPolicies = [...new Set(policyContributions[problem.id] || [])];
     const hinderingPolicies = [...new Set(hinderingContributions[problem.id] || [])];
+    const hinderingChainCount = (hinderingContributions[problem.id] || []).length;
     const isHindered = hinderingPolicies.length > 0;
-    const hindrance = isHindered ? Math.min(50, hinderingPolicies.length * 10) : 0;
+    const hindrance = isHindered ? Math.min(50, hinderingChainCount * 10) : 0;
 
     let direction = 'unchanged';
     if (helpingPolicies.length > 0 && !isHindered) direction = 'improving';
