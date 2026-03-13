@@ -621,10 +621,55 @@ header h1 {
   color: #888;
   line-height: 1.4;
   margin-bottom: 10px;
+  cursor: pointer;
+  transition: max-height 0.3s ease;
+}
+
+.policy-card-desc.collapsed {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.policy-card-desc:hover {
+  color: #aaa;
+}
+
+.impact-chains {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #2a2a4a;
+}
+
+.chain-line {
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: #777;
+}
+
+.chain-line b {
+  color: #aaa;
+  font-weight: 500;
+}
+
+.chain-line.helps {
+  color: #2ecc71aa;
+}
+
+.chain-line.helps b {
+  color: #2ecc71;
+}
+
+.chain-line.hinders {
+  color: #e74c3caa;
+}
+
+.chain-line.hinders b {
+  color: #e74c3c;
 }
 
 .policy-card-meta {

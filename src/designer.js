@@ -174,6 +174,21 @@ problemNodes.forEach(p => {
   problemCauses[p.id] = allCauses;
 });
 
+// Problem severity = based on incoming cause tree depth and breadth
+// Terminal problems (like nhs_crisis) have 0 outgoing weight but many incoming causes
+const problemSeverity = {};
+problemNodes.forEach(p => {
+  const causeTree = problemCauses[p.id];
+  // Weight by: direct causes count + cause tree depth, plus sum of upstream cause weights
+  const directCauses = (causedByEdges[p.id] || []).length;
+  let upstreamWeight = 0;
+  causeTree.forEach(causeId => {
+    upstreamWeight += (weights[causeId] || 0);
+  });
+  // Combine: tree size + upstream weight contributions
+  problemSeverity[p.id] = causeTree.size + upstreamWeight + directCauses;
+});
+
 // Which causes each policy addresses (via solutions it implements)
 function getPolicyAddressedCauses(policyId) {
   const addressed = new Set();
@@ -275,8 +290,8 @@ function computeCoverage(enabledPolicies) {
   return results;
 }
 
-// === Max weight (for normalising bars) ===
-const maxWeight = Math.max(...problemNodes.map(p => weights[p.id] || 0), 1);
+// === Max severity (for normalising bars) ===
+const maxSeverity = Math.max(...problemNodes.map(p => problemSeverity[p.id] || 0), 1);
 const maxImpact = Math.max(
   ...policyNodes.map(p => Math.abs(policyImpacts[p.id]?.netImpact || 0)),
   ...policyNodes.map(p => policyImpacts[p.id]?.positiveImpact || 0),
@@ -341,7 +356,7 @@ function renderPolicyList() {
   filtered = sortPolicies(filtered);
 
   policyListEl.innerHTML = filtered.map(policy => {
-    const impact = policyImpacts[policy.id] || { positiveImpact: 0, negativeImpact: 0, netImpact: 0 };
+    const impact = policyImpacts[policy.id] || { positiveImpact: 0, negativeImpact: 0, netImpact: 0, solutions: [], problemsAddressed: [], risksCreated: [] };
     const isEnabled = enabledPolicies.has(policy.id);
     const posWidth = Math.min(50, (impact.positiveImpact / maxImpact) * 50);
     const negWidth = Math.min(50, (impact.negativeImpact / maxImpact) * 50);
@@ -359,6 +374,42 @@ function renderPolicyList() {
       feasHtml = `<span class="feasibility-mini">⚙️ ${policy.practicality}/5</span>`;
     }
 
+    // Impact chain reasoning
+    let chainHtml = '';
+    const chains = [];
+    (impact.solutions || []).forEach(solId => {
+      const sol = nodeMap[solId];
+      if (!sol) return;
+      const solLabel = sol.label.replace(/\n/g, ' ');
+      const targets = solvesEdges[solId] || [];
+      targets.forEach(targetId => {
+        const target = nodeMap[targetId];
+        if (!target) return;
+        const targetLabel = target.label.replace(/\n/g, ' ');
+        if (target.type === 'problem') {
+          chains.push(`<span class="chain-line helps">✅ implements <b>${solLabel}</b> → solves <b>${targetLabel}</b></span>`);
+        } else if (target.type === 'cause') {
+          // Find downstream problems
+          const downstream = causesEdges[targetId] || [];
+          const probNames = downstream.map(pid => nodeMap[pid]?.label?.replace(/\n/g, ' ')).filter(Boolean);
+          const via = probNames.length ? ` → helps ${probNames.map(n => `<b>${n}</b>`).join(', ')}` : '';
+          chains.push(`<span class="chain-line helps">✅ implements <b>${solLabel}</b> → addresses <b>${targetLabel}</b>${via}</span>`);
+        }
+      });
+    });
+    (impact.risksCreated || []).forEach(fpId => {
+      const fp = nodeMap[fpId];
+      if (!fp) return;
+      const fpLabel = fp.label.replace(/\n/g, ' ');
+      const downstream = causesEdges[fpId] || [];
+      const probNames = downstream.map(pid => nodeMap[pid]?.label?.replace(/\n/g, ' ')).filter(Boolean);
+      const via = probNames.length ? ` → worsens ${probNames.map(n => `<b>${n}</b>`).join(', ')}` : '';
+      chains.push(`<span class="chain-line hinders">⚠️ risks <b>${fpLabel}</b>${via}</span>`);
+    });
+    if (chains.length) {
+      chainHtml = `<div class="impact-chains">${chains.join('')}</div>`;
+    }
+
     return `
       <div class="policy-card ${isEnabled ? 'enabled' : ''}" data-id="${policy.id}">
         <div class="policy-card-header">
@@ -368,7 +419,7 @@ function renderPolicyList() {
             <span class="toggle-slider"></span>
           </label>
         </div>
-        <p class="policy-card-desc">${policy.description || ''}</p>
+        <p class="policy-card-desc collapsed">${policy.description || ''}</p>
         <div class="policy-card-meta">
           <div class="impact-bar-container">
             <div class="impact-bar-label">Impact: ${impact.netImpact >= 0 ? '+' : ''}${impact.netImpact.toFixed(1)}</div>
@@ -381,6 +432,7 @@ function renderPolicyList() {
           <div class="party-dots">${partyDotsHtml}</div>
           ${feasHtml}
         </div>
+        ${chainHtml}
       </div>
     `;
   }).join('');
@@ -397,15 +449,23 @@ function renderPolicyList() {
       render();
     });
   });
+
+  // Click to expand/collapse descriptions
+  policyListEl.querySelectorAll('.policy-card-desc').forEach(desc => {
+    desc.addEventListener('click', (e) => {
+      e.stopPropagation();
+      desc.classList.toggle('collapsed');
+    });
+  });
 }
 
 function renderProblemDashboard() {
   const coverage = computeCoverage(enabledPolicies);
-  const sorted = [...problemNodes].sort((a, b) => (weights[b.id] || 0) - (weights[a.id] || 0));
+  const sorted = [...problemNodes].sort((a, b) => (problemSeverity[b.id] || 0) - (problemSeverity[a.id] || 0));
 
   problemListEl.innerHTML = sorted.map(problem => {
-    const w = weights[problem.id] || 0;
-    const severityPct = (w / maxWeight) * 100;
+    const sev = problemSeverity[problem.id] || 0;
+    const severityPct = (sev / maxSeverity) * 100;
     const cov = coverage[problem.id] || { coverage: 0, direction: 'unchanged', helpingPolicies: [], hinderingPolicies: [], hindrance: 0 };
     const directionIcon = { improving: '↗️', worsening: '↘️', mixed: '⚖️', unchanged: '➡️' }[cov.direction];
     const directionClass = cov.direction;

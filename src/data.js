@@ -1871,6 +1871,12 @@ export const edges = [
   { source: 'workforce_immigration_dependency', target: 'future_care_staffing_crisis', label: 'causes' },
 
   // Future problems can also cause other future or current problems
+  { source: 'future_sme_collapse', target: 'cost_of_living', label: 'causes' },
+  { source: 'future_sme_collapse', target: 'poverty_deprivation', label: 'causes' },
+  { source: 'future_sme_collapse', target: 'low_growth', label: 'causes' },
+  { source: 'future_sme_collapse', target: 'wage_stagnation', label: 'causes' },
+  { source: 'future_care_staffing_crisis', target: 'nhs_crisis', label: 'causes' },
+  { source: 'future_care_staffing_crisis', target: 'social_care_failure', label: 'causes' },
   { source: 'future_labour_shortages', target: 'social_care_failure', label: 'causes' },
   { source: 'future_labour_shortages', target: 'food_inflation', label: 'causes' },
   { source: 'future_nhs_recruitment_crisis', target: 'staff_shortages', label: 'causes' },
