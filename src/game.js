@@ -477,31 +477,32 @@ function applyImplement(polls, policyId, severityChanges) {
   for (const party of parties) {
     const stance = stances[party.id];
     if (party.id === GOV_PARTY) {
-      // Government implementing policy — modest boost if they support it
-      if (stance === 'support') newPolls[party.id] += 0.8;
-      else if (stance === 'oppose') newPolls[party.id] -= 1.5;
-      else newPolls[party.id] += 0.2;
+      // Government implementing policy — modest credit for action
+      if (stance === 'support') newPolls[party.id] += 0.3;
+      else if (stance === 'oppose') newPolls[party.id] -= 2.0;
+      else newPolls[party.id] -= 0.1;
     } else {
       // Opposition parties react
       if (stance === 'oppose') {
-        // Opposing a government policy they disagree with — modest boost
+        // Opposing government — energises their base, media coverage
         newPolls[party.id] += 0.6;
       } else if (stance === 'support') {
-        // They agree with gov — voters may think "why not vote for the real thing?"
-        newPolls[party.id] -= 0.3;
+        newPolls[party.id] -= 0.1;
       }
     }
-    newPolls[party.id] += randRange(-0.4, 0.4);
+    newPolls[party.id] += randRange(-0.5, 0.5);
   }
 
-  // Government bonus/penalty for problem effects (asymmetric — failures punished harder)
+  // Government bonus/penalty for problem effects
   const netImprovement = Object.values(severityChanges).reduce((s, v) => s + (v < 0 ? 1 : 0), 0);
   const netWorsening = Object.values(severityChanges).reduce((s, v) => s + (v > 0 ? 1 : 0), 0);
-  if (netImprovement > 0) newPolls[GOV_PARTY] += 0.5 * netImprovement;
-  if (netWorsening > 0) newPolls[GOV_PARTY] -= 1.0 * netWorsening;
+  // Solving problems is how governments rebuild trust — meaningful bonus
+  if (netImprovement > 0) newPolls[GOV_PARTY] += Math.min(1.5, 0.3 * netImprovement);
+  // Failures are salient and punished hard
+  if (netWorsening > 0) newPolls[GOV_PARTY] -= 1.5 * netWorsening;
 
-  // Government fatigue — small bleed per turn
-  newPolls[GOV_PARTY] -= 0.2;
+  // Government fatigue — incumbents bleed support over time
+  newPolls[GOV_PARTY] -= 0.4;
   // Reform momentum — outsider protest vote advantage
   newPolls['party_reform'] = (newPolls['party_reform'] || 0) + 0.15;
   // Green momentum — youth enthusiasm
@@ -526,8 +527,9 @@ function applyReject(polls, policyId) {
   }
 
   // Background trends
-  newPolls['party_reform'] = (newPolls['party_reform'] || 0) + 0.15;
-  newPolls['party_green'] = (newPolls['party_green'] || 0) + 0.1;
+  newPolls['party_reform'] = (newPolls['party_reform'] || 0) + 0.2;
+  newPolls['party_green'] = (newPolls['party_green'] || 0) + 0.15;
+  newPolls[GOV_PARTY] -= 0.2;
 
   return normalizePolls(newPolls);
 }
@@ -538,9 +540,9 @@ function applySkip(polls) {
     newPolls[party.id] += randRange(-0.3, 0.3);
   }
   // Background trends: government fatigue, Reform/Green momentum
-  newPolls[GOV_PARTY] -= 0.3;
-  newPolls['party_reform'] = (newPolls['party_reform'] || 0) + 0.2;
-  newPolls['party_green'] = (newPolls['party_green'] || 0) + 0.1;
+  newPolls[GOV_PARTY] -= 0.4;
+  newPolls['party_reform'] = (newPolls['party_reform'] || 0) + 0.25;
+  newPolls['party_green'] = (newPolls['party_green'] || 0) + 0.15;
   return normalizePolls(newPolls);
 }
 
@@ -548,17 +550,15 @@ function applySkip(polls) {
 const TOTAL_SEATS = 650;
 
 // FPTP seat efficiency — how well each party converts votes to seats
-// Labour: strong urban concentration → efficient
-// Conservatives: suburban/rural base, but Reform splits their vote
-// Reform: concentrated in some areas but spread thin nationally
-// Lib Dems: very targeted campaigning, overperform vote share
-// Greens: very spread out nationally, few concentrated areas
+// Based on current electoral geography and vote distribution patterns
+// Labour's 2024 efficiency was anomalous (Con/Ref split); it's eroding as
+// urban voters shift to Greens and Red Wall voters shift to Reform
 const SEAT_EFFICIENCY = {
-  party_labour: 1.4,
-  party_conservative: 0.85,
-  party_reform: 0.65,
-  party_libdem: 1.3,
-  party_green: 0.25,
+  party_labour: 1.15,
+  party_conservative: 0.95,
+  party_reform: 0.55,
+  party_libdem: 1.35,
+  party_green: 0.2,
 };
 
 function estimateSeats(polls) {
