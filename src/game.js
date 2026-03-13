@@ -648,10 +648,13 @@ function applyImplement(polls, policyId, severityChanges) {
   // Government bonus/penalty for problem effects
   const netImprovement = Object.values(severityChanges).reduce((s, v) => s + (v < 0 ? 1 : 0), 0);
   const netWorsening = Object.values(severityChanges).reduce((s, v) => s + (v > 0 ? 1 : 0), 0);
-  // Solving problems is how governments rebuild trust — meaningful bonus
-  if (netImprovement > 0) newPolls[GOV_PARTY] += Math.min(1.5, 0.3 * netImprovement);
-  // Failures are salient and punished hard
-  if (netWorsening > 0) newPolls[GOV_PARTY] -= 1.5 * netWorsening;
+  const netEffect = netImprovement - netWorsening;
+  // Net positive policies → rebuild trust; net negative → erode it
+  if (netEffect > 0) {
+    newPolls[GOV_PARTY] += Math.min(2.0, 0.5 * netEffect);
+  } else if (netEffect < 0) {
+    newPolls[GOV_PARTY] += 0.8 * netEffect; // penalty (netEffect is negative)
+  }
 
   // Government fatigue — incumbents bleed support over time
   newPolls[GOV_PARTY] -= 0.4;
