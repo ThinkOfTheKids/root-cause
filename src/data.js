@@ -1353,6 +1353,101 @@ export const nodes = [
     riskDetail: 'Risk of censorship if platform rules are too broad; hard to enforce internationally',
     sources: ['Ofcom', 'Full Fact', 'Alan Turing Institute'],
   },
+
+  // ════════════════════════════════════════════════
+  //  ADDITIONAL CLUSTERS: UNDEREXPLORED ISSUES
+  // ════════════════════════════════════════════════
+
+  // --- Loneliness Epidemic ---
+  { id: 'loneliness_epidemic', label: 'Loneliness\nEpidemic', type: 'cause', description: '1 in 4 UK adults chronically lonely, health impact comparable to 15 cigarettes/day. £32bn annual cost. Post-COVID worsening, aging population, remote work isolation.', sources: ['Jo Cox Commission on Loneliness', 'Campaign to End Loneliness', 'ONS'] },
+  { id: 'sol_social_infrastructure', label: 'Social\nInfrastructure', type: 'solution', description: 'Invest in community centres, libraries, public spaces, third places. Evidence shows physical meeting spaces reduce isolation more than digital interventions.', politicalDifficulty: 'medium', economicDifficulty: 'medium', practicality: 4, sideEffectRisk: 'low', riskDetail: 'Requires sustained funding commitment; risk of underuse without community engagement', sources: ['Bennett Institute for Public Policy', 'British Red Cross'] },
+  { id: 'sol_social_prescribing', label: 'Social\nPrescribing', type: 'solution', description: 'Expand GP-linked social prescribing (referring lonely patients to community activities). 900k+ referrals/year but patchy coverage. Needs ring-fenced funding and evaluation.', politicalDifficulty: 'easy', economicDifficulty: 'easy', practicality: 4, sideEffectRisk: 'low', riskDetail: 'Effectiveness evidence still emerging; risk of medicalising social problems', sources: ['NHS England', 'National Academy for Social Prescribing'] },
+
+  // --- Water Privatisation Failure ---
+  { id: 'water_privatisation', label: 'Water\nPrivatisation\nFailure', type: 'cause', description: '£85bn extracted in dividends since 1989, £70bn debt loaded onto companies, 40%+ real-terms bill increases. Sewage spills at record levels. Infrastructure crumbling. Scottish Water (public) delivers lower bills and higher investment.', sources: ['University of Greenwich', 'Ofwat', 'Environment Agency'] },
+  { id: 'sol_water_renationalisation', label: 'Water\nRenationalisation', type: 'solution', description: 'Return water companies to public ownership. Scottish Water model shows public ownership delivers lower bills, higher investment, and better environmental outcomes. Costs estimated £15-90bn depending on model.', politicalDifficulty: 'hard', economicDifficulty: 'hard', practicality: 3, sideEffectRisk: 'medium', riskDetail: 'Enormous upfront cost; legal challenges from shareholders; transition disruption', sources: ['We Own It', 'University of Greenwich', 'Social Market Foundation'] },
+  { id: 'pol_water_special_measures', label: 'Water Special\nMeasures Act', type: 'policy', status: 'active', description: 'Regulates executive pay/bonuses, increases Ofwat powers. Critics say it doesn\'t go far enough without structural ownership change.', sources: ['UK Parliament', 'Ofwat'] },
+  { id: 'future_water_infrastructure_collapse', label: 'Water Infrastructure\nCollapse', type: 'future_problem', horizon: 'decade', description: 'Without massive investment, Victorian-era water/sewage infrastructure faces systemic failure. Combined sewer overflows already at crisis levels.', sources: ['National Infrastructure Commission', 'Water UK'] },
+
+  // --- Gig Economy / Insecure Work ---
+  { id: 'gig_economy', label: 'Gig Economy &\nInsecure Work', type: 'cause', description: '4.4m+ workers in insecure employment. Zero-hours contracts, bogus self-employment, no sick pay/pensions/holiday. Drives in-work poverty and prevents savings.', sources: ['TUC', 'Resolution Foundation', 'ONS'] },
+  { id: 'sol_employment_rights', label: 'Employment\nRights Reform', type: 'solution', description: 'Ban exploitative zero-hours contracts, extend employment rights to gig workers (sick pay, holiday, pension contributions). Strengthen enforcement via single enforcement body.', politicalDifficulty: 'medium', economicDifficulty: 'medium', practicality: 4, sideEffectRisk: 'medium', riskDetail: 'Business cost increases; may reduce labour market flexibility; enforcement challenges', sources: ['TUC', 'CIPD', 'Low Pay Commission'] },
+
+  // --- Intergenerational Wealth Gap ---
+  { id: 'intergenerational_gap', label: 'Intergenerational\nWealth Gap', type: 'cause', description: 'Millennials have 50% less wealth than boomers at same age. Property ownership, pension access, student debt, and wage stagnation all compound. Inheritance increasingly determines life outcomes.', sources: ['Resolution Foundation', 'IFS', 'ONS Wealth and Assets Survey'] },
+  { id: 'future_generational_conflict', label: 'Generational\nConflict', type: 'future_problem', horizon: 'decade', description: 'Growing political and economic tension between asset-rich older generations and asset-poor younger ones. Risk of policy paralysis as demographics favour older voters.', sources: ['Resolution Foundation', 'Intergenerational Foundation'] },
+
+  // --- Institutional Trust Collapse ---
+  { id: 'institutional_trust_collapse', label: 'Institutional\nTrust Collapse', type: 'cause', description: 'Trust in Parliament at historic lows (~12%). Police trust dropped post-Sarah Everard. Media trust among lowest in Europe. Scientific trust challenged post-COVID. Erodes social contract and democratic legitimacy.', sources: ['Edelman Trust Barometer', 'Hansard Society', 'Reuters Institute'] },
+
+  // --- Soil Degradation & Food Security ---
+  { id: 'soil_degradation', label: 'Soil Degradation', type: 'cause', description: 'UK has lost 84% of fertile topsoil since 1850. Intensive agriculture depletes soil at 100x natural replenishment rate. 30-40 harvests left at current rates in some areas. Threatens long-term food security.', sources: ['Sustainable Soils Alliance', 'Environment Agency', 'Cranfield University'] },
+  { id: 'food_insecurity', label: 'Food\nInsecurity', type: 'cause', description: '8.4m UK adults experienced food insecurity in 2024. 3m+ food bank parcels distributed. Post-Brexit import friction. 46% of food imported, with supply chains vulnerable to climate and geopolitics.', sources: ['Food Foundation', 'Trussell Trust', 'DEFRA'] },
+  { id: 'sol_food_sovereignty', label: 'Food\nSovereignty', type: 'solution', description: 'Increase UK self-sufficiency in food production through support for sustainable farming, local food networks, urban agriculture, and reducing food waste (9.5m tonnes/year). Reduce import dependency.', politicalDifficulty: 'medium', economicDifficulty: 'medium', practicality: 3, sideEffectRisk: 'low', riskDetail: 'Higher domestic food prices possible; land use competition with housing and energy', sources: ['Food Foundation', 'Sustain', 'DEFRA'] },
+  { id: 'sol_regenerative_agriculture', label: 'Regenerative\nAgriculture', type: 'solution', description: 'Shift subsidies from intensive to regenerative farming practices that restore soil health, sequester carbon, and support biodiversity. ELMS (Environmental Land Management) is a start but underfunded.', politicalDifficulty: 'medium', economicDifficulty: 'medium', practicality: 3, sideEffectRisk: 'low', riskDetail: 'Transition period reduces yields; farmer resistance to practice changes; insufficient support during changeover', sources: ['Soil Association', 'DEFRA', 'Rothamsted Research'] },
+
+  // --- Land Value Tax ---
+  { id: 'sol_land_value_tax', label: 'Land Value\nTax', type: 'solution', description: 'Replace council tax and business rates with a tax on unimproved land value. Discourages speculation and land banking, incentivises development, progressive (landowners pay), generates ~£45bn. Supported by economists across the spectrum.', politicalDifficulty: 'hard', economicDifficulty: 'medium', practicality: 3, sideEffectRisk: 'medium', riskDetail: 'Massive opposition from landowners; transitional disruption to property markets; requires comprehensive land value assessment', sources: ['IFS', 'Adam Smith Institute', 'RICS'] },
+
+  // --- Universal Basic Income ---
+  { id: 'sol_ubi', label: 'Universal\nBasic Income', type: 'solution', description: 'Unconditional regular payments to all citizens. Pilots (Finland, Wales) show improved wellbeing, no reduction in work effort. Would simplify welfare, address automation displacement, reduce in-work poverty. Cost ~£200-300bn but replaces much existing welfare.', politicalDifficulty: 'hard', economicDifficulty: 'hard', practicality: 2, sideEffectRisk: 'medium', riskDetail: 'Enormous fiscal cost; work incentive concerns (though pilots suggest otherwise); complex transition from existing benefits', sources: ['RSA', 'Basic Income Earth Network', 'Welsh Government UBI Pilot'] },
+
+  // --- Four-Day Work Week ---
+  { id: 'sol_four_day_week', label: 'Four-Day\nWork Week', type: 'solution', description: 'UK trials (61 companies, 2022-23): 92% continued, revenue up 35%, sick days down 65%, staff turnover down 57%. Full pay for 80% of hours with 100% productivity target. Reduces childcare costs by 20%, improves mental health.', politicalDifficulty: 'medium', economicDifficulty: 'medium', practicality: 3, sideEffectRisk: 'low', riskDetail: 'Not suitable for all sectors (healthcare, emergency services); competitive concerns if adopted unilaterally', sources: ['4 Day Week Campaign', 'Autonomy', 'Cambridge University'] },
+
+  // --- Citizens' Assemblies ---
+  { id: 'sol_citizens_assemblies', label: 'Citizens\'\nAssemblies', type: 'solution', description: 'Randomly selected citizens deliberating on complex policy issues (climate, constitution). Used successfully in Ireland (abortion, marriage equality), France. Rebuilds trust, creates informed and legitimate policy mandates. Can be permanent or issue-specific.', politicalDifficulty: 'medium', economicDifficulty: 'easy', practicality: 4, sideEffectRisk: 'low', riskDetail: 'Politicians may resist sharing decision-making power; media may trivialise; requires genuine government commitment to implement recommendations', sources: ['Sortition Foundation', 'RSA', 'OECD'] },
+
+  // --- Community Wealth Building ---
+  { id: 'sol_community_wealth', label: 'Community\nWealth Building', type: 'solution', description: 'Preston Model: redirect council procurement to local businesses, support co-operatives, anchor institutions invest locally, community land trusts. Preston reduced unemployment by 60%. Keeps wealth circulating locally rather than extracted by distant shareholders.', politicalDifficulty: 'easy', economicDifficulty: 'easy', practicality: 5, sideEffectRisk: 'low', riskDetail: 'May face resistance from large corporations losing procurement contracts; requires local government capacity', sources: ['Centre for Local Economic Strategies', 'Preston City Council', 'Democracy Collaborative'] },
+
+  // --- Obesity & Ultra-Processed Food ---
+  { id: 'obesity_upf_crisis', label: 'Obesity & UPF\nCrisis', type: 'cause', description: '64% of UK adults overweight/obese. Ultra-processed foods cause 17,000+ premature deaths/year and account for 57% of caloric intake. Healthy food costs 2x unhealthy per calorie. Poorest households would need 45% of income for healthy diet.', sources: ['BMJ', 'Food Foundation', 'NHS Digital'] },
+  { id: 'sol_upf_regulation', label: 'UPF Regulation\n& Food Reform', type: 'solution', description: 'Sugar/salt taxes, junk food ad bans (especially to children), mandatory reformulation targets, free school meals expansion, food environment regulation (limit fast food density near schools).', politicalDifficulty: 'hard', economicDifficulty: 'medium', practicality: 3, sideEffectRisk: 'medium', riskDetail: 'Massive food industry lobbying; "nanny state" accusations; regressive impact of food taxes without compensating measures', sources: ['Public Health England', 'Jamie Oliver Food Foundation', 'BMJ'] },
+
+  // --- Gambling Harm ---
+  { id: 'gambling_harm', label: 'Gambling\nHarm', type: 'cause', description: '1.3m problem gamblers in UK, 3.8m at risk. £14bn/year industry. Online gambling normalised especially among young men. Linked to 400-700 suicides/year. Gambling companies spend £1.5bn/year on advertising.', sources: ['Gambling Commission', 'NHS', 'Gambling with Lives'] },
+  { id: 'sol_gambling_reform', label: 'Gambling\nRegulation Reform', type: 'solution', description: 'Mandatory stake limits, ad ban (especially during sport), affordability checks, levy on gambling companies to fund treatment. White Paper 2023 was weak — stronger action needed.', politicalDifficulty: 'medium', economicDifficulty: 'easy', practicality: 4, sideEffectRisk: 'low', riskDetail: 'Gambling industry lobbying; concerns about driving activity offshore; impact on horse racing and sports sponsorship', sources: ['Gambling Commission', 'Gambling with Lives', 'House of Lords Select Committee'] },
+
+  // --- Air Pollution ---
+  { id: 'air_pollution', label: 'Air Pollution', type: 'cause', description: 'Causes 28,000-36,000 premature UK deaths/year. Costs NHS £1.6bn/year. Disproportionately affects deprived areas. Road transport, domestic heating, and agriculture main sources. Legal limits regularly breached.', sources: ['DEFRA', 'Royal College of Physicians', 'Client Earth'] },
+  { id: 'sol_clean_air', label: 'Clean Air\nAct 2.0', type: 'solution', description: 'WHO-aligned air quality targets (legally binding), expansion of Clean Air Zones, investment in public transport and active travel, phase-out of wood-burning stoves in urban areas.', politicalDifficulty: 'medium', economicDifficulty: 'medium', practicality: 4, sideEffectRisk: 'low', riskDetail: 'Motorist backlash similar to ULEZ; rural areas dependent on solid fuel heating; enforcement challenges', sources: ['Client Earth', 'British Lung Foundation', 'DEFRA'] },
+
+  // --- Biodiversity Loss ---
+  { id: 'biodiversity_loss', label: 'Biodiversity\nLoss', type: 'cause', description: 'UK is one of the most nature-depleted countries on Earth (bottom 10%). 41% of species declining. Pollinator populations crashed. Agricultural intensification, habitat loss, pesticide use. Threatens food security via reduced pollination (£690m/year value).', sources: ['Natural History Museum', 'State of Nature Report', 'RSPB'] },
+  { id: 'sol_nature_restoration', label: 'Nature\nRestoration', type: 'solution', description: 'Legally binding targets to halt species decline, 30% of land/sea protected by 2030, ban neonicotinoids, restore peatlands and wetlands, rewilding initiatives. Fund via biodiversity credits and reformed agricultural subsidies.', politicalDifficulty: 'medium', economicDifficulty: 'medium', practicality: 3, sideEffectRisk: 'low', riskDetail: 'Farmer resistance to land use changes; tension with housing development targets; rewilding controversial in rural communities', sources: ['Wildlife Trusts', 'Natural England', 'Rewilding Britain'] },
+
+  // --- Local Government Funding Crisis ---
+  { id: 'local_govt_crisis', label: 'Local Government\nFunding Crisis', type: 'cause', description: '£4bn+ annual funding gap. Half of upper-tier councils risk insolvency. Birmingham (£148m cuts), Cornwall (£48.7m). 60% real-terms funding cut since 2010. Statutory services being slashed. Libraries, youth centres, parks closing.', sources: ['LGA', 'NAO', 'Institute for Fiscal Studies'] },
+  { id: 'future_council_collapse', label: 'Mass Council\nInsolvency', type: 'future_problem', horizon: 'now', description: 'Multiple councils already issued Section 114 notices (effective bankruptcy). More expected as SEND debts crystallise and temporary measures expire. Risk of fundamental breakdown in local public services.', sources: ['LGA', 'CIPFA', 'The Bureau of Investigative Journalism'] },
+  { id: 'sol_local_funding_reform', label: 'Local Government\nFunding Reform', type: 'solution', description: 'Multi-year funding settlements, fair funding formula, allow councils to raise revenue locally (tourism taxes, land value capture), write off historical SEND debt, end competitive bidding for pots.', politicalDifficulty: 'medium', economicDifficulty: 'hard', practicality: 4, sideEffectRisk: 'low', riskDetail: 'Winners and losers in any redistribution; fiscal hawks oppose more local spending power', sources: ['LGA', 'IFS', 'New Local'] },
+
+  // --- SEND Crisis ---
+  { id: 'send_crisis', label: 'SEND Crisis', type: 'cause', description: '£5bn cumulative deficit. Only 50% of Education, Health and Care plans completed on time. Demand massively outstripping provision. Parents going through tribunals (97% success rate = system failing). Statutory override expires March 2026, threatening mass council insolvency.', sources: ['NAO', 'LGA', 'IPSEA'] },
+  { id: 'sol_send_reform', label: 'SEND System\nReform', type: 'solution', description: 'Properly fund mainstream inclusion, reduce EHC plan bureaucracy, national standards with local flexibility, early identification and support, write off council SEND debts, adequately fund special schools.', politicalDifficulty: 'medium', economicDifficulty: 'hard', practicality: 3, sideEffectRisk: 'low', riskDetail: 'Any reform risks perception of reducing entitlements; massive upfront cost; workforce shortages in specialist roles', sources: ['NAO', 'IPSEA', 'Special Needs Jungle'] },
+
+  // --- Unpaid Care Economy ---
+  { id: 'unpaid_care_crisis', label: 'Unpaid Care\nCrisis', type: 'cause', description: '10.6m unpaid carers in UK, contributing £162bn/year in care (more than NHS budget). 72% report mental health deterioration. 1.4m provide 50+ hours/week. Predominantly women. Invisible in economic statistics. Carer\'s Allowance is £81.90/week — lowest benefit relative to hours worked.', sources: ['Carers UK', 'ONS', 'House of Commons Library'] },
+  { id: 'sol_carer_support', label: 'Carer Support\nReform', type: 'solution', description: 'Increase Carer\'s Allowance to at least minimum wage equivalent, provide respite care entitlement, flexible working rights for carers, pension credits for caring years, NHS carer health checks.', politicalDifficulty: 'medium', economicDifficulty: 'hard', practicality: 4, sideEffectRisk: 'low', riskDetail: 'Significant fiscal cost; difficulty defining and verifying caring responsibilities at scale', sources: ['Carers UK', 'House of Commons Work and Pensions Committee'] },
+
+  // --- Corporate Tax Avoidance ---
+  { id: 'corporate_tax_avoidance', label: 'Corporate Tax\nAvoidance', type: 'cause', description: 'UK loses estimated £35-70bn/year to tax avoidance and evasion. Multinationals shift profits to low-tax jurisdictions. HMRC understaffed — £1 spent on compliance generates £18 return. Tax gap widens inequality and forces austerity on public services.', sources: ['Tax Justice Network', 'HMRC', 'TUC'] },
+  { id: 'sol_tax_reform', label: 'Corporate Tax\nReform', type: 'solution', description: 'Implement global minimum tax (Pillar 2), close loopholes, increase HMRC enforcement funding, digital services tax, beneficial ownership transparency, exit taxes on capital.', politicalDifficulty: 'hard', economicDifficulty: 'medium', practicality: 3, sideEffectRisk: 'medium', riskDetail: 'Capital flight risk; business lobbying; competitiveness concerns; requires international coordination', sources: ['Tax Justice Network', 'OECD', 'HMRC'] },
+
+  // --- Preventive Healthcare ---
+  { id: 'sol_preventive_health', label: 'Preventive\nHealthcare', type: 'solution', description: 'Shift NHS spending from treatment to prevention. Every £1 in prevention saves £14 in treatment. Includes smoking cessation, obesity programmes, vaccination, screening, public health campaigns. Currently only 5% of NHS budget goes to prevention.', politicalDifficulty: 'easy', economicDifficulty: 'medium', practicality: 4, sideEffectRisk: 'low', riskDetail: 'Benefits take years to materialise; short-term political incentives favour visible acute care spending', sources: ['Public Health England', 'Health Foundation', 'BMA'] },
+
+  // --- Wealth Tax ---
+  { id: 'sol_wealth_tax', label: 'Wealth Tax', type: 'solution', description: 'Annual tax on net wealth above £10m threshold. Could raise £22bn/year from 0.6% of population. Addresses extreme concentration (top 1% own 23% of wealth). Reduces intergenerational inequality. Norway, Switzerland, Spain already have wealth taxes.', politicalDifficulty: 'hard', economicDifficulty: 'medium', practicality: 2, sideEffectRisk: 'high', riskDetail: 'Capital flight risk; valuation complexity (illiquid assets); wealth concealment; political donor opposition', sources: ['Wealth Tax Commission', 'LSE', 'Tax Justice Network'] },
+
+  // --- Right to Repair ---
+  { id: 'sol_right_to_repair', label: 'Right to\nRepair', type: 'solution', description: 'Mandate manufacturers to provide spare parts, repair manuals, and software updates for 10+ years. Reduce e-waste (1.5m tonnes/year in UK), save consumers money, create local repair jobs. UK lags behind EU\'s comprehensive right to repair directive.', politicalDifficulty: 'easy', economicDifficulty: 'easy', practicality: 4, sideEffectRisk: 'low', riskDetail: 'Manufacturer lobbying; reduced planned obsolescence profits; initial compliance costs for businesses', sources: ['Restart Project', 'DEFRA', 'iFixit'] },
+
+  // --- Social Mobility Decline ---
+  { id: 'social_mobility_decline', label: 'Social Mobility\nDecline', type: 'cause', description: 'UK has lowest social mobility in developed world. A child\'s postcode and parents\' income are strongest predictors of life outcomes. Graduate premium declining. Professional careers increasingly require unpaid internships. Social mobility has stalled or reversed since 2010.', sources: ['Social Mobility Commission', 'Sutton Trust', 'OECD'] },
+
+  // --- Third Sector Collapse ---
+  { id: 'future_third_sector_collapse', label: 'Third Sector\nCollapse', type: 'future_problem', horizon: 'now', description: 'Charities and voluntary organisations facing existential funding crisis. 60%+ report increased demand but reduced funding. Many handing contracts back to councils. Services for vulnerable people (homeless, disabled, SEND) being abandoned. The "burnout cascade" — as public services cut, demand shifts to charities who also can\'t cope.', sources: ['NCVO', 'Pro Bono Economics', 'Charity Commission'] },
 ];
 
 export const edges = [
@@ -1834,6 +1929,157 @@ export const edges = [
   { source: 'sol_osa_reform', target: 'future_id_fraud_risk', label: 'solves' },
   { source: 'sol_osa_reform', target: 'future_uk_tech_exodus', label: 'solves' },
   { source: 'sol_osa_reform', target: 'future_censorship_creep', label: 'solves' },
+
+  // ════════════════════════════════════════════════
+  //  ADDITIONAL CLUSTERS: UNDEREXPLORED ISSUES
+  // ════════════════════════════════════════════════
+
+  // --- Loneliness Epidemic ---
+  { source: 'loneliness_epidemic', target: 'mental_health_crisis', label: 'causes' },
+  { source: 'loneliness_epidemic', target: 'nhs_crisis', label: 'causes' },
+  { source: 'loneliness_epidemic', target: 'future_aging_population', label: 'causes' },
+  { source: 'sol_social_infrastructure', target: 'loneliness_epidemic', label: 'solves' },
+  { source: 'sol_social_prescribing', target: 'loneliness_epidemic', label: 'solves' },
+  { source: 'sol_social_prescribing', target: 'mental_health_crisis', label: 'solves' },
+
+  // --- Water Privatisation Failure ---
+  { source: 'water_privatisation', target: 'cost_of_living', label: 'causes' },
+  { source: 'water_privatisation', target: 'future_water_scarcity', label: 'causes' },
+  { source: 'water_privatisation', target: 'future_water_infrastructure_collapse', label: 'causes' },
+  { source: 'sol_water_renationalisation', target: 'water_privatisation', label: 'solves' },
+  { source: 'pol_water_special_measures', target: 'sol_water_infrastructure', label: 'implements' },
+  { source: 'pol_water_special_measures', target: 'future_water_infrastructure_collapse', label: 'risks' },
+
+  // --- Gig Economy / Insecure Work ---
+  { source: 'gig_economy', target: 'wage_stagnation', label: 'causes' },
+  { source: 'gig_economy', target: 'mental_health_crisis', label: 'causes' },
+  { source: 'gig_economy', target: 'future_pension_crisis', label: 'causes' },
+  { source: 'weak_unions', target: 'gig_economy', label: 'causes' },
+  { source: 'sol_employment_rights', target: 'gig_economy', label: 'solves' },
+
+  // --- Intergenerational Wealth Gap ---
+  { source: 'intergenerational_gap', target: 'housing_unaffordable', label: 'causes' },
+  { source: 'intergenerational_gap', target: 'voter_apathy', label: 'causes' },
+  { source: 'intergenerational_gap', target: 'future_generational_conflict', label: 'causes' },
+  { source: 'financialisation', target: 'intergenerational_gap', label: 'causes' },
+  { source: 'austerity', target: 'intergenerational_gap', label: 'causes' },
+
+  // --- Institutional Trust Collapse ---
+  { source: 'institutional_trust_collapse', target: 'voter_apathy', label: 'causes' },
+  { source: 'institutional_trust_collapse', target: 'democratic_deficit', label: 'causes' },
+  { source: 'political_disconnect', target: 'institutional_trust_collapse', label: 'causes' },
+  { source: 'media_concentration', target: 'institutional_trust_collapse', label: 'causes' },
+
+  // --- Soil Degradation & Food Security ---
+  { source: 'soil_degradation', target: 'food_insecurity', label: 'causes' },
+  { source: 'food_insecurity', target: 'cost_of_living', label: 'causes' },
+  { source: 'food_insecurity', target: 'nhs_crisis', label: 'causes' },
+  { source: 'brexit_impact', target: 'food_insecurity', label: 'causes' },
+  { source: 'sol_food_sovereignty', target: 'food_insecurity', label: 'solves' },
+  { source: 'sol_regenerative_agriculture', target: 'soil_degradation', label: 'solves' },
+
+  // --- Land Value Tax ---
+  { source: 'sol_land_value_tax', target: 'land_banking', label: 'solves' },
+  { source: 'sol_land_value_tax', target: 'financialisation', label: 'solves' },
+  { source: 'sol_land_value_tax', target: 'housing_unaffordable', label: 'solves' },
+
+  // --- Universal Basic Income ---
+  { source: 'sol_ubi', target: 'gig_economy', label: 'solves' },
+  { source: 'sol_ubi', target: 'cost_of_living', label: 'solves' },
+  { source: 'sol_ubi', target: 'future_ai_displacement', label: 'solves' },
+  { source: 'sol_ubi', target: 'food_insecurity', label: 'solves' },
+
+  // --- Four-Day Work Week ---
+  { source: 'sol_four_day_week', target: 'low_productivity', label: 'solves' },
+  { source: 'sol_four_day_week', target: 'mental_health_crisis', label: 'solves' },
+  { source: 'sol_four_day_week', target: 'childcare_costs', label: 'solves' },
+
+  // --- Citizens' Assemblies ---
+  { source: 'sol_citizens_assemblies', target: 'institutional_trust_collapse', label: 'solves' },
+  { source: 'sol_citizens_assemblies', target: 'voter_apathy', label: 'solves' },
+  { source: 'sol_citizens_assemblies', target: 'democratic_deficit', label: 'solves' },
+
+  // --- Community Wealth Building ---
+  { source: 'sol_community_wealth', target: 'london_centrism', label: 'solves' },
+  { source: 'sol_community_wealth', target: 'inequality', label: 'solves' },
+  { source: 'sol_community_wealth', target: 'low_investment', label: 'solves' },
+
+  // --- Obesity & Ultra-Processed Food ---
+  { source: 'obesity_upf_crisis', target: 'nhs_crisis', label: 'causes' },
+  { source: 'obesity_upf_crisis', target: 'mental_health_crisis', label: 'causes' },
+  { source: 'food_insecurity', target: 'obesity_upf_crisis', label: 'causes' },
+  { source: 'sol_upf_regulation', target: 'obesity_upf_crisis', label: 'solves' },
+
+  // --- Gambling Harm ---
+  { source: 'gambling_harm', target: 'mental_health_crisis', label: 'causes' },
+  { source: 'gambling_harm', target: 'poverty_deprivation', label: 'causes' },
+  { source: 'gambling_harm', target: 'crime_social', label: 'causes' },
+  { source: 'sol_gambling_reform', target: 'gambling_harm', label: 'solves' },
+
+  // --- Air Pollution ---
+  { source: 'air_pollution', target: 'nhs_crisis', label: 'causes' },
+  { source: 'air_pollution', target: 'climate_challenge', label: 'causes' },
+  { source: 'sol_clean_air', target: 'air_pollution', label: 'solves' },
+
+  // --- Biodiversity Loss ---
+  { source: 'biodiversity_loss', target: 'food_insecurity', label: 'causes' },
+  { source: 'biodiversity_loss', target: 'climate_challenge', label: 'causes' },
+  { source: 'soil_degradation', target: 'biodiversity_loss', label: 'causes' },
+  { source: 'sol_nature_restoration', target: 'biodiversity_loss', label: 'solves' },
+
+  // --- Local Government Funding Crisis ---
+  { source: 'austerity', target: 'local_govt_crisis', label: 'causes' },
+  { source: 'local_govt_crisis', target: 'inequality', label: 'causes' },
+  { source: 'local_govt_crisis', target: 'future_council_collapse', label: 'causes' },
+  { source: 'local_govt_crisis', target: 'education_crisis', label: 'causes' },
+  { source: 'sol_local_funding_reform', target: 'local_govt_crisis', label: 'solves' },
+
+  // --- SEND Crisis ---
+  { source: 'send_crisis', target: 'local_govt_crisis', label: 'causes' },
+  { source: 'send_crisis', target: 'education_crisis', label: 'causes' },
+  { source: 'send_crisis', target: 'mental_health_crisis', label: 'causes' },
+  { source: 'school_funding_squeeze', target: 'send_crisis', label: 'causes' },
+  { source: 'sol_send_reform', target: 'send_crisis', label: 'solves' },
+
+  // --- Unpaid Care Economy ---
+  { source: 'social_care_failure', target: 'unpaid_care_crisis', label: 'causes' },
+  { source: 'unpaid_care_crisis', target: 'mental_health_crisis', label: 'causes' },
+  { source: 'unpaid_care_crisis', target: 'future_gender_inequality_entrenchment', label: 'causes' },
+  { source: 'unpaid_care_crisis', target: 'wage_stagnation', label: 'causes' },
+  { source: 'sol_carer_support', target: 'unpaid_care_crisis', label: 'solves' },
+
+  // --- Corporate Tax Avoidance ---
+  { source: 'corporate_tax_avoidance', target: 'austerity', label: 'causes' },
+  { source: 'corporate_tax_avoidance', target: 'inequality', label: 'causes' },
+  { source: 'corporate_tax_avoidance', target: 'local_govt_crisis', label: 'causes' },
+  { source: 'lobbying_influence', target: 'corporate_tax_avoidance', label: 'causes' },
+  { source: 'sol_tax_reform', target: 'corporate_tax_avoidance', label: 'solves' },
+
+  // --- Preventive Healthcare ---
+  { source: 'sol_preventive_health', target: 'nhs_crisis', label: 'solves' },
+  { source: 'sol_preventive_health', target: 'obesity_upf_crisis', label: 'solves' },
+  { source: 'sol_preventive_health', target: 'mental_health_crisis', label: 'solves' },
+
+  // --- Wealth Tax ---
+  { source: 'sol_wealth_tax', target: 'intergenerational_gap', label: 'solves' },
+  { source: 'sol_wealth_tax', target: 'inequality', label: 'solves' },
+  { source: 'sol_wealth_tax', target: 'austerity', label: 'solves' },
+
+  // --- Right to Repair ---
+  { source: 'sol_right_to_repair', target: 'cost_of_living', label: 'solves' },
+  { source: 'sol_right_to_repair', target: 'climate_challenge', label: 'solves' },
+
+  // --- Social Mobility Decline ---
+  { source: 'attainment_gap', target: 'social_mobility_decline', label: 'causes' },
+  { source: 'inequality', target: 'social_mobility_decline', label: 'causes' },
+  { source: 'social_mobility_decline', target: 'voter_apathy', label: 'causes' },
+  { source: 'social_mobility_decline', target: 'crime_social', label: 'causes' },
+
+  // --- Third Sector Collapse ---
+  { source: 'local_govt_crisis', target: 'future_third_sector_collapse', label: 'causes' },
+  { source: 'austerity', target: 'future_third_sector_collapse', label: 'causes' },
+  { source: 'future_third_sector_collapse', target: 'loneliness_epidemic', label: 'causes' },
+  { source: 'future_third_sector_collapse', target: 'mental_health_crisis', label: 'causes' },
 ];
 
 // ════════════════════════════════════════════════
@@ -1850,6 +2096,9 @@ export const groups = [
   { id: 'grp_costliving', label: '💰 Cost of Living', color: '#f1c40f' },
   { id: 'grp_democracy', label: '🗳️ Democracy', color: '#e056a0' },
   { id: 'grp_digital', label: '🔐 Digital Rights & Privacy', color: '#00bcd4' },
+  { id: 'grp_food', label: '🍽️ Food & Public Health', color: '#e88a1a' },
+  { id: 'grp_social', label: '🤝 Social Fabric', color: '#8e6cc2' },
+  { id: 'grp_local', label: '🏛️ Local Government', color: '#d4795c' },
 ];
 
 export const nodeGroups = {
@@ -2033,6 +2282,71 @@ export const nodeGroups = {
   sol_trade_diversification: 'grp_economy',
   sol_eu_financial_alignment: 'grp_economy',
   sol_ni_relief: 'grp_economy',
+
+  // Food & Public Health
+  soil_degradation: 'grp_food',
+  food_insecurity: 'grp_food',
+  sol_food_sovereignty: 'grp_food',
+  sol_regenerative_agriculture: 'grp_food',
+  obesity_upf_crisis: 'grp_food',
+  sol_upf_regulation: 'grp_food',
+  gambling_harm: 'grp_food',
+  sol_gambling_reform: 'grp_food',
+
+  // Social Fabric
+  loneliness_epidemic: 'grp_social',
+  sol_social_infrastructure: 'grp_social',
+  sol_social_prescribing: 'grp_social',
+  intergenerational_gap: 'grp_social',
+  future_generational_conflict: 'grp_social',
+  sol_ubi: 'grp_social',
+  unpaid_care_crisis: 'grp_social',
+  sol_carer_support: 'grp_social',
+
+  // Local Government
+  local_govt_crisis: 'grp_local',
+  future_council_collapse: 'grp_local',
+  sol_local_funding_reform: 'grp_local',
+  send_crisis: 'grp_local',
+  sol_send_reform: 'grp_local',
+  future_third_sector_collapse: 'grp_local',
+
+  // Water (Cost of Living)
+  water_privatisation: 'grp_costliving',
+  sol_water_renationalisation: 'grp_costliving',
+  pol_water_special_measures: 'grp_costliving',
+  future_water_infrastructure_collapse: 'grp_costliving',
+
+  // Economy additions
+  gig_economy: 'grp_economy',
+  sol_employment_rights: 'grp_economy',
+  sol_four_day_week: 'grp_economy',
+  corporate_tax_avoidance: 'grp_economy',
+  sol_tax_reform: 'grp_economy',
+  sol_wealth_tax: 'grp_economy',
+
+  // Democracy additions
+  institutional_trust_collapse: 'grp_democracy',
+  sol_citizens_assemblies: 'grp_democracy',
+
+  // Housing additions
+  sol_land_value_tax: 'grp_housing',
+
+  // Health additions
+  sol_preventive_health: 'grp_health',
+
+  // Energy & Climate additions
+  air_pollution: 'grp_energy',
+  sol_clean_air: 'grp_energy',
+  biodiversity_loss: 'grp_energy',
+  sol_nature_restoration: 'grp_energy',
+  sol_right_to_repair: 'grp_energy',
+
+  // Regional additions
+  sol_community_wealth: 'grp_regional',
+
+  // Education additions
+  social_mobility_decline: 'grp_education',
 };
 
 // ════════════════════════════════════════════════
@@ -2146,5 +2460,12 @@ export const policyPopularity = {
     party_reform: 'oppose',
     party_green: 'oppose',
     party_libdem: 'oppose',
+  },
+  pol_water_special_measures: {
+    party_labour: 'support',
+    party_conservative: 'mixed',
+    party_reform: 'mixed',
+    party_green: 'oppose',
+    party_libdem: 'support',
   },
 };

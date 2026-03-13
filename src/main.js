@@ -349,47 +349,47 @@ const cy = cytoscape({
       },
     },
   ],
-  layout: {
-    name: 'cose',
-    animate: false,
-    nodeRepulsion: () => 32000,
-    idealEdgeLength: () => 100,
-    edgeElasticity: () => 80,
-    gravity: 0.4,
-    numIter: 2500,
-    padding: 60,
-    stop: function() {},
-  },
+  layout: { name: 'preset' },
   minZoom: 0.15,
   maxZoom: 3,
 });
 
-// After layout settles, rearrange groups and reveal
-cy.one('layoutstop', () => {
-  cy.nodes('.group').forEach(group => {
-    const children = group.children().filter(':visible');
-    if (children.length === 0) return;
+// Run layout after construction so we can reference `cy` in the stop callback
+cy.layout({
+  name: 'cose',
+  animate: false,
+  nodeRepulsion: () => 32000,
+  idealEdgeLength: () => 100,
+  edgeElasticity: () => 80,
+  gravity: 0.4,
+  numIter: 2500,
+  padding: 60,
+  stop: function() {
+    cy.nodes('.group').forEach(group => {
+      const children = group.children().filter(':visible');
+      if (children.length === 0) return;
 
-    const bb = children.boundingBox();
-    const centerX = (bb.x1 + bb.x2) / 2;
-    const centerY = (bb.y1 + bb.y2) / 2;
+      const bb = children.boundingBox();
+      const centerX = (bb.x1 + bb.x2) / 2;
+      const centerY = (bb.y1 + bb.y2) / 2;
 
-    const radius = Math.max(80, children.length * 22);
+      const radius = Math.max(80, children.length * 22);
 
-    children.forEach((child, i) => {
-      const angle = (2 * Math.PI * i) / children.length - Math.PI / 2;
-      child.position({
-        x: centerX + radius * Math.cos(angle),
-        y: centerY + radius * Math.sin(angle),
+      children.forEach((child, i) => {
+        const angle = (2 * Math.PI * i) / children.length - Math.PI / 2;
+        child.position({
+          x: centerX + radius * Math.cos(angle),
+          y: centerY + radius * Math.sin(angle),
+        });
       });
     });
-  });
 
-  cy.fit(undefined, 60);
-  document.getElementById('cy').classList.add('settled');
-  const loader = document.getElementById('loading');
-  if (loader) loader.remove();
-});
+    cy.fit(undefined, 60);
+    document.getElementById('cy').classList.add('settled');
+    const loader = document.getElementById('loading');
+    if (loader) loader.remove();
+  },
+}).run();
 
 // === Trail collection ===
 
