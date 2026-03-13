@@ -210,12 +210,30 @@ function computeCoverage(enabledPolicies) {
   const allRiskTargets = new Set();
   const policyContributions = {}; // problemId → [policyId, ...]
 
+  const hinderingContributions = {}; // problemId → [policyId, ...]
+
   enabledPolicies.forEach(polId => {
     const addressed = getPolicyAddressedCauses(polId);
     addressed.forEach(id => allAddressed.add(id));
 
     const riskTargets = getPolicyRiskTargets(polId);
     riskTargets.forEach(id => allRiskTargets.add(id));
+
+    // Track which policies hinder which problems (via risks)
+    riskTargets.forEach(targetId => {
+      const targetNode = nodeMap[targetId];
+      if (targetNode && targetNode.type === 'problem') {
+        (hinderingContributions[targetId] ??= []).push(polId);
+      }
+      // Also follow causes from risk targets to problems
+      const downstream = causesEdges[targetId] || [];
+      downstream.forEach(probId => {
+        const probNode = nodeMap[probId];
+        if (probNode && probNode.type === 'problem') {
+          (hinderingContributions[probId] ??= []).push(polId);
+        }
+      });
+    });
 
     // Track which policies help which problems
     const impact = policyImpacts[polId];
@@ -234,24 +252,24 @@ function computeCoverage(enabledPolicies) {
     causes.forEach(causeId => {
       if (allAddressed.has(causeId)) addressedCount++;
     });
-    // Also check if problem itself is directly solved
     if (allAddressed.has(problem.id)) addressedCount += 1;
 
     let coverage = Math.min(100, (addressedCount / totalCauses) * 100);
 
-    // Reduce coverage if risks target this problem
     const isRiskTarget = allRiskTargets.has(problem.id);
+    const hindrance = isRiskTarget ? 15 : 0;
     if (isRiskTarget && coverage > 0) {
-      coverage = Math.max(0, coverage - 15);
+      coverage = Math.max(0, coverage - hindrance);
     }
 
     const helpingPolicies = policyContributions[problem.id] || [];
+    const hinderingPolicies = [...new Set(hinderingContributions[problem.id] || [])];
     let direction = 'unchanged';
     if (helpingPolicies.length > 0 && !isRiskTarget) direction = 'improving';
     else if (isRiskTarget && helpingPolicies.length === 0) direction = 'worsening';
-    else if (isRiskTarget && helpingPolicies.length > 0) direction = 'improving';
+    else if (isRiskTarget && helpingPolicies.length > 0) direction = 'mixed';
 
-    results[problem.id] = { coverage, direction, helpingPolicies, isRiskTarget };
+    results[problem.id] = { coverage, direction, helpingPolicies, hinderingPolicies, isRiskTarget, hindrance };
   });
 
   return results;
@@ -388,17 +406,31 @@ function renderProblemDashboard() {
   problemListEl.innerHTML = sorted.map(problem => {
     const w = weights[problem.id] || 0;
     const severityPct = (w / maxWeight) * 100;
-    const cov = coverage[problem.id] || { coverage: 0, direction: 'unchanged', helpingPolicies: [] };
-    const directionIcon = cov.direction === 'improving' ? '↗️' : cov.direction === 'worsening' ? '↘️' : '➡️';
-    const directionClass = cov.direction === 'improving' ? 'improving' : cov.direction === 'worsening' ? 'worsening' : '';
+    const cov = coverage[problem.id] || { coverage: 0, direction: 'unchanged', helpingPolicies: [], hinderingPolicies: [], hindrance: 0 };
+    const directionIcon = { improving: '↗️', worsening: '↘️', mixed: '⚖️', unchanged: '➡️' }[cov.direction];
+    const directionClass = cov.direction;
 
-    let policiesHtml = '';
+    // Residual severity = baseline reduced by coverage, increased by hindrance
+    const netReduction = Math.max(0, cov.coverage - cov.hindrance);
+    const residualPct = severityPct * (1 - netReduction / 100);
+    const hindrancePct = Math.min(severityPct, severityPct * cov.hindrance / 100);
+
+    let helpHtml = '';
     if (cov.helpingPolicies.length > 0) {
       const names = cov.helpingPolicies.map(id => {
         const n = nodeMap[id];
-        return n ? `<span>${n.label.replace(/\n/g, ' ')}</span>` : '';
+        return n ? `<span class="helped-policy">${n.label.replace(/\n/g, ' ')}</span>` : '';
       }).filter(Boolean).join(', ');
-      policiesHtml = `<div class="problem-policies">Helped by: ${names}</div>`;
+      helpHtml = `<div class="problem-policies helped">✅ Helped by: ${names}</div>`;
+    }
+
+    let hinderHtml = '';
+    if (cov.hinderingPolicies.length > 0) {
+      const names = cov.hinderingPolicies.map(id => {
+        const n = nodeMap[id];
+        return n ? `<span class="hindered-policy">${n.label.replace(/\n/g, ' ')}</span>` : '';
+      }).filter(Boolean).join(', ');
+      hinderHtml = `<div class="problem-policies hindered">⚠️ Hindered by: ${names}</div>`;
     }
 
     return `
@@ -407,19 +439,17 @@ function renderProblemDashboard() {
           <h3>${problem.label.replace(/\n/g, ' ')}</h3>
           <span class="problem-direction">${directionIcon}</span>
         </div>
-        <div class="problem-bars">
-          <div class="problem-bar">
-            <span class="problem-bar-label">Severity</span>
-            <div class="problem-bar-track"><div class="problem-bar-fill severity" style="width:${severityPct}%"></div></div>
-            <span class="problem-bar-value">${w.toFixed(1)}</span>
+        <div class="severity-composite">
+          <span class="problem-bar-label">Severity</span>
+          <div class="severity-track">
+            <div class="severity-baseline" style="width:${severityPct}%"></div>
+            <div class="severity-residual" style="width:${residualPct}%"></div>
+            ${cov.hindrance > 0 ? `<div class="severity-hindrance" style="left:${severityPct}%; width:${hindrancePct}%"></div>` : ''}
           </div>
-          <div class="problem-bar">
-            <span class="problem-bar-label">Coverage</span>
-            <div class="problem-bar-track"><div class="problem-bar-fill coverage" style="width:${cov.coverage}%"></div></div>
-            <span class="problem-bar-value">${cov.coverage.toFixed(0)}%</span>
-          </div>
+          <span class="problem-bar-value">${cov.coverage > 0 || cov.hindrance > 0 ? `${severityPct.toFixed(0)}→${residualPct.toFixed(0)}%` : `${severityPct.toFixed(0)}%`}</span>
         </div>
-        ${policiesHtml}
+        ${helpHtml}
+        ${hinderHtml}
       </div>
     `;
   }).join('');
