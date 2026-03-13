@@ -1448,6 +1448,40 @@ export const nodes = [
 
   // --- Third Sector Collapse ---
   { id: 'future_third_sector_collapse', label: 'Third Sector\nCollapse', type: 'future_problem', horizon: 'now', description: 'Charities and voluntary organisations facing existential funding crisis. 60%+ report increased demand but reduced funding. Many handing contracts back to councils. Services for vulnerable people (homeless, disabled, SEND) being abandoned. The "burnout cascade" — as public services cut, demand shifts to charities who also can\'t cope.', sources: ['NCVO', 'Pro Bono Economics', 'Charity Commission'] },
+
+  // ── Round 2 topic clusters ──────────────────────
+
+  // --- Homelessness Crisis ---
+  { id: 'homelessness', label: 'Homelessness\nCrisis', type: 'cause', description: '300,000+ households in England experiencing worst forms of homelessness (2025). 7,700+ rough sleeping in a single month. 21% increase since 2022. Record spending on temporary accommodation. System is crisis-focused rather than preventive.', sources: ['Shelter', 'DLUHC', 'Crisis'] },
+  { id: 'sol_homelessness_prevention', label: 'Homelessness\nPrevention', type: 'solution', description: 'Housing First model (Finland reduced homelessness 35%). Guarantee of accommodation on leaving prison/care/hospital. Fully fund local authority prevention duties. Ring-fence temporary accommodation funding.', politicalDifficulty: 'medium', economicDifficulty: 'medium', practicality: 4, sideEffectRisk: 'low', riskDetail: 'NIMBY resistance to hostels/Housing First properties; requires sustained multi-year funding commitment', sources: ['Crisis', 'Shelter', 'Y-Foundation (Finland)'] },
+
+  // --- Leasehold Trap ---
+  { id: 'leasehold_trap', label: 'Leasehold\nTrap', type: 'cause', description: '4.9m leasehold properties in England & Wales. Ground rent exploitation (some doubling every 10 years), permission fees for minor changes, unfair service charges, freeholder profiteering. Leaseholders don\'t truly own their homes. Reform repeatedly promised but delayed.', sources: ['Leasehold Knowledge Partnership', 'Law Commission', 'DLUHC'] },
+  { id: 'sol_leasehold_reform', label: 'Leasehold\nReform', type: 'solution', description: 'Ban new leasehold houses (done), cap ground rents at peppercorn for existing leases, make enfranchisement (buying freehold) cheaper and simpler, commonhold as default for flats. Leasehold Reform Act 2024 was a start but incomplete.', politicalDifficulty: 'medium', economicDifficulty: 'medium', practicality: 4, sideEffectRisk: 'medium', riskDetail: 'Freeholder compensation costs; property developer lobbying; complex transition for existing leases; potential impact on property values', sources: ['Law Commission', 'National Leasehold Campaign', 'DLUHC'] },
+
+  // --- Brain Drain ---
+  { id: 'brain_drain', label: 'Brain Drain', type: 'cause', description: 'Increasing emigration of skilled UK workers (doctors, engineers, academics, tech workers) due to high cost of living, stagnant wages, and better opportunities abroad. Compounds existing workforce shortages in NHS, tech, and academia. Australia, Canada, UAE major destinations.', sources: ['GMC', 'ONS', 'HESA'] },
+  { id: 'future_talent_exodus', label: 'Talent Exodus', type: 'future_problem', horizon: 'decade', description: 'Risk of self-reinforcing cycle: skilled workers leave → services decline → more leave. Particularly acute in healthcare (13% of UK-trained doctors working abroad) and tech (post-Brexit, post-OSA).', sources: ['GMC', 'BMA', 'Tech Nation'] },
+
+  // --- Student Debt Burden ---
+  { id: 'student_debt', label: 'Student Debt\nBurden', type: 'cause', description: '£182bn outstanding student loans. Plan 2 loans charging 7.3% interest (2023). Average graduate owes £45,000+. Deters lower-income students. Delays home ownership, family formation, and saving. Most debt will never be repaid — written off at taxpayer expense after 30-40 years.', sources: ['Student Loans Company', 'IFS', 'House of Commons Library'] },
+  { id: 'sol_higher_ed_reform', label: 'Higher Education\nFunding Reform', type: 'solution', description: 'Options: reduce tuition fees, return to grant system for disadvantaged students, graduate tax replacing loans, employer co-funding for vocational degrees, expand degree apprenticeships.', politicalDifficulty: 'hard', economicDifficulty: 'hard', practicality: 3, sideEffectRisk: 'medium', riskDetail: 'Enormous fiscal cost of writing off existing debt; university funding gap if fees reduced; any reform creates winners and losers among existing/future graduates', sources: ['IFS', 'Augar Review', 'UUK'] },
+
+  // --- Infrastructure Maintenance Backlog ---
+  { id: 'infrastructure_backlog', label: 'Infrastructure\nMaintenance Backlog', type: 'cause', description: 'Decades of deferred maintenance across roads (£14bn repair backlog), bridges, schools (RAAC concrete crisis affecting 200+ schools), hospitals (£11.6bn NHS estate maintenance backlog). Patch-and-mend approach costs more long-term. Safety risks increasing.', sources: ['NAO', 'DfE', 'NHS Digital'] },
+  { id: 'sol_infrastructure_investment', label: 'Infrastructure\nMaintenance Fund', type: 'solution', description: 'Ring-fenced multi-year infrastructure maintenance budget. Prioritise safety-critical repairs (RAAC, structurally deficient bridges). Preventive maintenance costs 4-5x less than emergency repairs. National asset register to track condition.', politicalDifficulty: 'easy', economicDifficulty: 'hard', practicality: 5, sideEffectRisk: 'low', riskDetail: 'Competes with other spending priorities; less politically visible than new builds; requires sustained commitment across electoral cycles', sources: ['NAO', 'ICE', 'IPA'] },
+
+  // --- Domestic Abuse ---
+  { id: 'domestic_abuse', label: 'Domestic Abuse\nCrisis', type: 'cause', description: '2.3m victims/year in England & Wales. Refuge services turning away 60%+ of referrals due to lack of space/funding. £66bn annual economic cost. Linked to homelessness (largest single cause for women). Intersects with poverty, mental health, and children\'s outcomes.', sources: ['ONS', 'Women\'s Aid', 'SafeLives'] },
+  { id: 'sol_domestic_abuse_funding', label: 'Domestic Abuse\nServices Funding', type: 'solution', description: 'Guarantee sustainable multi-year funding for refuges and support services. Currently 60% of funding from local authorities with no ring-fencing. Implement Domestic Abuse Act 2021 fully. Perpetrator programmes, legal aid restoration.', politicalDifficulty: 'easy', economicDifficulty: 'medium', practicality: 4, sideEffectRisk: 'low', riskDetail: 'Cross-party support in principle but competes with other local government priorities; enforcement of perpetrator programmes challenging', sources: ['Women\'s Aid', 'SafeLives', 'Domestic Abuse Commissioner'] },
+
+  // --- Digital Divide ---
+  { id: 'digital_divide', label: 'Digital Divide', type: 'cause', description: '2.4m older people digitally excluded. 5.4m adults have zero basic digital skills. As services move online (NHS, banking, benefits, council services), exclusion translates to inability to access essential services. Rural broadband gaps persist. Low-income households can\'t afford devices/data.', sources: ['Ofcom', 'Lloyds Bank Digital Index', 'Good Things Foundation'] },
+  { id: 'sol_digital_inclusion', label: 'Digital Inclusion\nProgramme', type: 'solution', description: 'Subsidised broadband/devices for low-income households, guaranteed offline alternatives for essential services, community digital skills training, public library digital hubs. Social tariffs mandated for all ISPs.', politicalDifficulty: 'easy', economicDifficulty: 'easy', practicality: 4, sideEffectRisk: 'low', riskDetail: 'ISP lobbying against mandated social tariffs; maintaining offline services costs more; training needs sustained funding', sources: ['Good Things Foundation', 'Ofcom', 'DCMS'] },
+
+  // --- Triple Lock Unsustainability ---
+  { id: 'triple_lock_unsustainable', label: 'Triple Lock\nUnsustainability', type: 'cause', description: 'State pension triple lock (highest of inflation, earnings, 2.5%) is fiscally unsustainable with aging demographics. Could push pension age to 74 by 2060s. State pension spending projected to rise from 5% to 8%+ of GDP. Politically untouchable — 12m pensioner votes. Creates intergenerational unfairness.', sources: ['OBR', 'IFS', 'Resolution Foundation'] },
+  { id: 'future_pension_age_rise', label: 'Pension Age\nRise to 71-74', type: 'future_problem', horizon: '30years', description: 'Without reform, pension age must rise dramatically or taxes on working-age population become unsustainable. Risk of pensioner poverty if state pension cut instead. No good options without early action.', sources: ['OBR', 'IFS', 'Pensions Policy Institute'] },
 ];
 
 export const edges = [
@@ -2080,6 +2114,69 @@ export const edges = [
   { source: 'austerity', target: 'future_third_sector_collapse', label: 'causes' },
   { source: 'future_third_sector_collapse', target: 'loneliness_epidemic', label: 'causes' },
   { source: 'future_third_sector_collapse', target: 'mental_health_crisis', label: 'causes' },
+
+  // ── Round 2 topic cluster edges ─────────────────
+
+  // --- Homelessness Crisis ---
+  { source: 'housing_unaffordable', target: 'homelessness', label: 'causes' },
+  { source: 'high_rents', target: 'homelessness', label: 'causes' },
+  { source: 'mental_health_crisis', target: 'homelessness', label: 'causes' },
+  { source: 'austerity', target: 'homelessness', label: 'causes' },
+  { source: 'homelessness', target: 'nhs_crisis', label: 'causes' },
+  { source: 'homelessness', target: 'crime_social', label: 'causes' },
+  { source: 'sol_homelessness_prevention', target: 'homelessness', label: 'solves' },
+  { source: 'sol_social_housing', target: 'homelessness', label: 'solves' },
+
+  // --- Leasehold Trap ---
+  { source: 'leasehold_trap', target: 'housing_unaffordable', label: 'causes' },
+  { source: 'leasehold_trap', target: 'cost_of_living', label: 'causes' },
+  { source: 'financialisation', target: 'leasehold_trap', label: 'causes' },
+  { source: 'sol_leasehold_reform', target: 'leasehold_trap', label: 'solves' },
+
+  // --- Brain Drain ---
+  { source: 'cost_of_living', target: 'brain_drain', label: 'causes' },
+  { source: 'wage_stagnation', target: 'brain_drain', label: 'causes' },
+  { source: 'brain_drain', target: 'staff_shortages', label: 'causes' },
+  { source: 'brain_drain', target: 'low_productivity', label: 'causes' },
+  { source: 'brain_drain', target: 'future_talent_exodus', label: 'causes' },
+  { source: 'sol_wage_policy', target: 'brain_drain', label: 'solves' },
+
+  // --- Student Debt Burden ---
+  { source: 'student_debt', target: 'intergenerational_gap', label: 'causes' },
+  { source: 'student_debt', target: 'housing_unaffordable', label: 'causes' },
+  { source: 'student_debt', target: 'future_birthrate_decline', label: 'causes' },
+  { source: 'student_debt', target: 'social_mobility_decline', label: 'causes' },
+  { source: 'sol_higher_ed_reform', target: 'student_debt', label: 'solves' },
+
+  // --- Infrastructure Maintenance Backlog ---
+  { source: 'austerity', target: 'infrastructure_backlog', label: 'causes' },
+  { source: 'infrastructure_backlog', target: 'nhs_crisis', label: 'causes' },
+  { source: 'infrastructure_backlog', target: 'education_crisis', label: 'causes' },
+  { source: 'infrastructure_backlog', target: 'inequality', label: 'causes' },
+  { source: 'infrastructure_backlog', target: 'poor_infrastructure', label: 'causes' },
+  { source: 'sol_infrastructure_investment', target: 'infrastructure_backlog', label: 'solves' },
+
+  // --- Domestic Abuse ---
+  { source: 'domestic_abuse', target: 'homelessness', label: 'causes' },
+  { source: 'domestic_abuse', target: 'mental_health_crisis', label: 'causes' },
+  { source: 'domestic_abuse', target: 'crime_social', label: 'causes' },
+  { source: 'poverty_deprivation', target: 'domestic_abuse', label: 'causes' },
+  { source: 'sol_domestic_abuse_funding', target: 'domestic_abuse', label: 'solves' },
+
+  // --- Digital Divide ---
+  { source: 'digital_divide', target: 'loneliness_epidemic', label: 'causes' },
+  { source: 'digital_divide', target: 'inequality', label: 'causes' },
+  { source: 'digital_divide', target: 'nhs_crisis', label: 'causes' },
+  { source: 'future_aging_population', target: 'digital_divide', label: 'causes' },
+  { source: 'sol_digital_inclusion', target: 'digital_divide', label: 'solves' },
+
+  // --- Triple Lock Unsustainability ---
+  { source: 'triple_lock_unsustainable', target: 'future_pension_crisis', label: 'causes' },
+  { source: 'triple_lock_unsustainable', target: 'intergenerational_gap', label: 'causes' },
+  { source: 'triple_lock_unsustainable', target: 'tax_burden', label: 'causes' },
+  { source: 'future_aging_population', target: 'triple_lock_unsustainable', label: 'causes' },
+  { source: 'future_birthrate_decline', target: 'triple_lock_unsustainable', label: 'causes' },
+  { source: 'triple_lock_unsustainable', target: 'future_pension_age_rise', label: 'causes' },
 ];
 
 // ════════════════════════════════════════════════
@@ -2347,6 +2444,24 @@ export const nodeGroups = {
 
   // Education additions
   social_mobility_decline: 'grp_education',
+
+  // Additional clusters — Round 2
+  homelessness: 'grp_housing',
+  sol_homelessness_prevention: 'grp_housing',
+  leasehold_trap: 'grp_housing',
+  sol_leasehold_reform: 'grp_housing',
+  brain_drain: 'grp_economy',
+  future_talent_exodus: 'grp_economy',
+  student_debt: 'grp_education',
+  sol_higher_ed_reform: 'grp_education',
+  infrastructure_backlog: 'grp_regional',
+  sol_infrastructure_investment: 'grp_regional',
+  domestic_abuse: 'grp_crime',
+  sol_domestic_abuse_funding: 'grp_crime',
+  digital_divide: 'grp_digital',
+  sol_digital_inclusion: 'grp_digital',
+  triple_lock_unsustainable: 'grp_economy',
+  future_pension_age_rise: 'grp_economy',
 };
 
 // ════════════════════════════════════════════════
