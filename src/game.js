@@ -588,7 +588,8 @@ function computeSeverityChanges(activePolicies) {
   for (const prob of problemNodes) {
     const h = helpCounts[prob.id] || 0;
     const k = hinderCounts[prob.id] || 0;
-    const net = h - k * 1.5;
+    // Positive = problem worsening, negative = problem improving
+    const net = k * 1.5 - h;
     // Scale: each chain count ≈ 5% change
     let delta = Math.round(net * 5);
     delta = Math.max(-30, Math.min(20, delta));
@@ -1091,16 +1092,17 @@ export function initGame(container) {
   // ── Game logic ──
   function handleChoice(choice, policy) {
     if (policy) {
-      const severityChanges = computeSeverityChanges(
-        choice === 'implement'
-          ? [...state.activePolicies, policy.id]
-          : state.activePolicies
-      );
-
       if (choice === 'implement') {
+        // Compute INCREMENTAL severity change from this new policy only
+        const prevChanges = computeSeverityChanges(state.activePolicies);
         state.activePolicies.push(policy.id);
+        const newChanges = computeSeverityChanges(state.activePolicies);
+        const incrementalChanges = {};
+        for (const prob of problemNodes) {
+          incrementalChanges[prob.id] = (newChanges[prob.id] || 0) - (prevChanges[prob.id] || 0);
+        }
         if (policy.id === 'pol_proportional_representation') state.prActive = true;
-        state.polls = applyImplement(state.polls, policy.id, severityChanges);
+        state.polls = applyImplement(state.polls, policy.id, incrementalChanges);
       } else if (choice === 'reject') {
         state.rejectedPolicies.push(policy.id);
         state.polls = applyReject(state.polls, policy.id);
