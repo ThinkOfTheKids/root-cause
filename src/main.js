@@ -351,8 +351,7 @@ const cy = cytoscape({
   ],
   layout: {
     name: 'cose',
-    animate: true,
-    animationDuration: 1500,
+    animate: false,
     nodeRepulsion: () => 32000,
     idealEdgeLength: () => 100,
     edgeElasticity: () => 80,
@@ -379,6 +378,10 @@ const cy = cytoscape({
           });
         });
       });
+
+      // Reveal graph now that layout is settled
+      document.getElementById('cy').classList.add('settled');
+      cy.fit(undefined, 60);
     },
   },
   minZoom: 0.15,
