@@ -396,9 +396,12 @@ cy.layout({
 // Influence threshold: only follow the top branches that account for this
 // fraction of total influence at each node (prevents everything lighting up)
 const INFLUENCE_THRESHOLD = 0.8;
+const HOP_DECAY = 0.8; // multiply effective threshold by this each hop
 
-function getUpstreamTrail(nodeId, visitedNodes = new Set(), trailEdges = new Set()) {
+function getUpstreamTrail(nodeId, visitedNodes = new Set(), trailEdges = new Set(), depth = 0) {
   if (visitedNodes.has(nodeId)) return { nodes: visitedNodes, edges: trailEdges };
+  const effectiveThreshold = INFLUENCE_THRESHOLD * Math.pow(HOP_DECAY, depth);
+  if (effectiveThreshold < 0.1) return { nodes: visitedNodes, edges: trailEdges };
   visitedNodes.add(nodeId);
 
   const incoming = cy.edges(`[target = "${nodeId}"][label = "causes"]`);
@@ -416,17 +419,19 @@ function getUpstreamTrail(nodeId, visitedNodes = new Set(), trailEdges = new Set
   let accumulated = 0;
 
   for (const r of ranked) {
-    if (accumulated >= INFLUENCE_THRESHOLD * totalW && ranked.length > 1) break;
+    if (accumulated >= effectiveThreshold * totalW && ranked.length > 1) break;
     accumulated += r.w + 1;
     trailEdges.add(r.edge.id());
-    getUpstreamTrail(r.srcId, visitedNodes, trailEdges);
+    getUpstreamTrail(r.srcId, visitedNodes, trailEdges, depth + 1);
   }
 
   return { nodes: visitedNodes, edges: trailEdges };
 }
 
-function getDownstreamTrail(nodeId, visitedNodes = new Set(), trailEdges = new Set()) {
+function getDownstreamTrail(nodeId, visitedNodes = new Set(), trailEdges = new Set(), depth = 0) {
   if (visitedNodes.has(nodeId)) return { nodes: visitedNodes, edges: trailEdges };
+  const effectiveThreshold = INFLUENCE_THRESHOLD * Math.pow(HOP_DECAY, depth);
+  if (effectiveThreshold < 0.1) return { nodes: visitedNodes, edges: trailEdges };
   visitedNodes.add(nodeId);
 
   const outgoing = cy.edges(`[source = "${nodeId}"][label = "causes"]`);
@@ -444,10 +449,10 @@ function getDownstreamTrail(nodeId, visitedNodes = new Set(), trailEdges = new S
   let accumulated = 0;
 
   for (const r of ranked) {
-    if (accumulated >= INFLUENCE_THRESHOLD * totalW && ranked.length > 1) break;
+    if (accumulated >= effectiveThreshold * totalW && ranked.length > 1) break;
     accumulated += r.w + 1;
     trailEdges.add(r.edge.id());
-    getDownstreamTrail(r.tgtId, visitedNodes, trailEdges);
+    getDownstreamTrail(r.tgtId, visitedNodes, trailEdges, depth + 1);
   }
 
   return { nodes: visitedNodes, edges: trailEdges };
@@ -686,8 +691,14 @@ function showSidebar(nodeData) {
   });
 }
 
+function restoreHorizon() {
+  cy.elements().filter('.trail-revealed').removeClass('trail-revealed');
+  applyHorizonFilter(parseInt(document.getElementById('horizon-slider').value));
+}
+
 function selectNode(node) {
   cy.elements().removeClass('highlighted selected-node faded');
+  restoreHorizon();
 
   const nodeId = node.id();
   const nodeData = node.data();
@@ -795,16 +806,16 @@ function selectNode(node) {
     });
   }
 
-  // Fade everything, then un-fade the trail (but keep horizon-hidden elements hidden)
+  // Fade everything, then un-fade the trail (temporarily reveal horizon-hidden trail nodes)
   cy.elements().addClass('faded');
 
   allTrailNodes.forEach(id => {
     const el = cy.getElementById(id);
-    if (!el.hasClass('horizon-hidden')) el.removeClass('faded').addClass('highlighted');
+    el.removeClass('faded horizon-hidden').addClass('highlighted trail-revealed');
   });
   allTrailEdges.forEach(id => {
     const el = cy.getElementById(id);
-    if (!el.hasClass('horizon-hidden')) el.removeClass('faded').addClass('highlighted');
+    el.removeClass('faded horizon-hidden').addClass('highlighted trail-revealed');
   });
 
   // Highlight parent group nodes that contain highlighted children
@@ -903,6 +914,7 @@ function selectGroup(groupNode) {
 cy.on('tap', (evt) => {
   if (evt.target === cy) {
     cy.elements().removeClass('highlighted selected-node faded');
+    restoreHorizon();
     document.getElementById('sidebar-content').innerHTML = `
       <div class="placeholder">
         <p>👈 Click a node to explore</p>
