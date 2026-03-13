@@ -482,14 +482,16 @@ function renderProblemDashboard() {
     const directionIcon = { improving: '↗️', worsening: '↘️', mixed: '⚖️', unchanged: '➡️' }[cov.direction];
     const directionClass = cov.direction;
 
-    // Residual severity: reduced by coverage, increased by hindrance
-    // netEffect can be negative (hindrance exceeds coverage = things get worse)
+    // Impact: negative = improving, positive = worsening (user's -100 to +100 scale)
     const netEffect = cov.coverage - cov.hindrance;
-    const residualPct = Math.min(100, Math.max(0, severityPct * (1 - netEffect / 100)));
-
-    // Only show change if rounded values actually differ
-    const hasVisibleChange = Math.round(severityPct) !== Math.round(residualPct);
+    const change = Math.max(-100, Math.min(100, -netEffect)); // clamp to [-100, +100]
     const hasAnyEffect = cov.coverage > 0 || cov.hindrance > 0;
+
+    // Bar positioning: centre (50%) = no change, left = improving, right = worsening
+    const barLeft = 50 + Math.min(0, change) / 2;
+    const barWidth = Math.abs(change) / 2;
+    const barClass = change < 0 ? 'improving' : change > 0 ? 'worsening' : '';
+    const changeLabel = change === 0 ? '0%' : (change > 0 ? `+${change.toFixed(0)}%` : `${change.toFixed(0)}%`);
 
     // Build per-policy impact chains for this problem
     let chainsHtml = '';
@@ -517,15 +519,15 @@ function renderProblemDashboard() {
           <span class="problem-direction">${directionIcon}</span>
         </div>
         <div class="severity-composite">
-          <span class="problem-bar-label">Severity</span>
-          <div class="severity-track">
-            ${hasAnyEffect
-              ? `<div class="severity-baseline" style="width:${severityPct}%"></div>
-                 <div class="severity-residual" style="width:${residualPct}%"></div>`
-              : `<div class="severity-residual" style="width:${severityPct}%"></div>`
+          <span class="problem-bar-label">Sev: ${severityPct.toFixed(0)}%</span>
+          <div class="impact-track">
+            <div class="impact-centre-line"></div>
+            ${hasAnyEffect && barWidth > 0
+              ? `<div class="impact-bar ${barClass}" style="left:${barLeft}%;width:${barWidth}%"></div>`
+              : ''
             }
           </div>
-          <span class="problem-bar-value">${hasVisibleChange ? `${severityPct.toFixed(0)}→${residualPct.toFixed(0)}%` : `${severityPct.toFixed(0)}%`}</span>
+          <span class="problem-bar-value ${barClass}">${hasAnyEffect ? changeLabel : '0%'}</span>
         </div>
         ${chainsHtml}
       </div>

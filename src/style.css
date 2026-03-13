@@ -860,58 +860,57 @@ header h1 {
   min-width: 60px;
 }
 
-.severity-track {
+.impact-track {
   flex: 1;
-  height: 10px;
-  background: #2a2a4a;
-  border-radius: 5px;
+  height: 12px;
+  background: linear-gradient(to right, rgba(39, 174, 96, 0.08) 0%, rgba(39, 174, 96, 0.08) 49.5%, #333 49.5%, #333 50.5%, rgba(231, 76, 60, 0.08) 50.5%, rgba(231, 76, 60, 0.08) 100%);
+  border-radius: 6px;
   position: relative;
   overflow: hidden;
 }
 
-.severity-baseline {
+.impact-centre-line {
   position: absolute;
+  left: 50%;
   top: 0;
-  left: 0;
+  width: 1px;
   height: 100%;
-  background: rgba(231, 76, 60, 0.2);
-  border-radius: 5px;
-  transition: width 0.4s ease;
+  background: #666;
+  z-index: 2;
 }
 
-.severity-residual {
+.impact-bar {
   position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  background: #e74c3c;
-  border-radius: 5px;
-  transition: width 0.4s ease;
+  top: 1px;
+  height: calc(100% - 2px);
+  border-radius: 4px;
+  transition: left 0.4s ease, width 0.4s ease;
+  z-index: 1;
 }
 
-.severity-hindrance {
-  /* no longer used — residual bar extends beyond baseline instead */
-  display: none;
-}
-
-/* When problem worsens, style the residual extension beyond baseline */
-.problem-row.worsening .severity-residual {
-  background: #c0392b;
-}
-.problem-row.mixed .severity-residual {
-  background: #e67e22;
-}
-.problem-row.improving .severity-residual {
+.impact-bar.improving {
   background: #27ae60;
+}
+
+.impact-bar.worsening {
+  background: #e74c3c;
+}
+
+.impact-bar.mixed {
+  background: #e67e22;
 }
 
 .problem-bar-value {
   font-size: 0.7rem;
-  color: #aaa;
   min-width: 56px;
   text-align: right;
   white-space: nowrap;
 }
+
+.problem-bar-value.improving { color: #2ecc71; }
+.problem-bar-value.worsening { color: #e74c3c; }
+.problem-bar-value.mixed { color: #e67e22; }
+.problem-bar-value.unchanged { color: #666; }
 
 .problem-impact-chains {
   margin-top: 8px;
