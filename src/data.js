@@ -1893,7 +1893,7 @@ export const edges = [
   { source: 'pol_vpn_ip_bill', target: 'future_encryption_weakening', label: 'risks' },
   { source: 'pol_crime_bill', target: 'future_surveillance_normalisation', label: 'risks' },
   { source: 'pol_digital_id', target: 'sol_digital_identity', label: 'implements' },
-  { source: 'sol_digital_identity', target: 'future_id_fraud_risk', label: 'solves' },
+  { source: 'pol_digital_id', target: 'future_id_fraud_risk', label: 'risks' },
   { source: 'pol_digital_id', target: 'future_digital_id_abuse', label: 'risks' },
   { source: 'pol_digital_id', target: 'future_surveillance_normalisation', label: 'risks' },
   { source: 'future_digital_id_abuse', target: 'democratic_deficit', label: 'causes' },

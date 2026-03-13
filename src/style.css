@@ -866,7 +866,7 @@ header h1 {
   background: #2a2a4a;
   border-radius: 5px;
   position: relative;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .severity-baseline {
@@ -890,13 +890,19 @@ header h1 {
 }
 
 .severity-hindrance {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  background: rgba(231, 76, 60, 0.5);
-  border-radius: 0 5px 5px 0;
-  border-left: 2px solid #e74c3c;
-  transition: width 0.4s ease, left 0.4s ease;
+  /* no longer used — residual bar extends beyond baseline instead */
+  display: none;
+}
+
+/* When problem worsens, style the residual extension beyond baseline */
+.problem-row.worsening .severity-residual {
+  background: #c0392b;
+}
+.problem-row.mixed .severity-residual {
+  background: #e67e22;
+}
+.problem-row.improving .severity-residual {
+  background: #27ae60;
 }
 
 .problem-bar-value {

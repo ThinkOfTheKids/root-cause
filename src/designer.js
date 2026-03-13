@@ -481,13 +481,13 @@ function renderProblemDashboard() {
     const directionIcon = { improving: '↗️', worsening: '↘️', mixed: '⚖️', unchanged: '➡️' }[cov.direction];
     const directionClass = cov.direction;
 
-    // Residual severity = baseline reduced by coverage, increased by hindrance
-    const netReduction = Math.max(0, cov.coverage - cov.hindrance);
-    const residualPct = severityPct * (1 - netReduction / 100);
-    const hindrancePct = Math.min(severityPct, severityPct * cov.hindrance / 100);
+    // Residual severity: reduced by coverage, increased by hindrance
+    // netEffect can be negative (hindrance exceeds coverage = things get worse)
+    const netEffect = cov.coverage - cov.hindrance;
+    const residualPct = Math.min(100, Math.max(0, severityPct * (1 - netEffect / 100)));
 
     // Only show change if rounded values actually differ
-    const hasVisibleChange = (cov.coverage > 0 || cov.hindrance > 0) && Math.round(severityPct) !== Math.round(residualPct);
+    const hasVisibleChange = Math.round(severityPct) !== Math.round(residualPct);
     const hasAnyEffect = cov.coverage > 0 || cov.hindrance > 0;
 
     // Build per-policy impact chains for this problem
@@ -520,8 +520,7 @@ function renderProblemDashboard() {
           <div class="severity-track">
             ${hasAnyEffect
               ? `<div class="severity-baseline" style="width:${severityPct}%"></div>
-                 <div class="severity-residual" style="width:${residualPct}%"></div>
-                 ${cov.hindrance > 0 ? `<div class="severity-hindrance" style="left:${severityPct}%; width:${hindrancePct}%"></div>` : ''}`
+                 <div class="severity-residual" style="width:${residualPct}%"></div>`
               : `<div class="severity-residual" style="width:${severityPct}%"></div>`
             }
           </div>
