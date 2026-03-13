@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Root Cause — UK Issues</title>
+  <script type="module" crossorigin src="/assets/index-D3wmUheu.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-DPHiMZgv.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>🔍 Root Cause</h1>
+      <p class="subtitle">Tracing the UK's problems to their roots</p>
+      <div id="horizon-control">
+        <label for="horizon-slider">🕐 Horizon:</label>
+        <input type="range" id="horizon-slider" min="0" max="3" value="1" step="1" />
+        <span id="horizon-label">Next Decade</span>
+      </div>
+      <select id="party-select" title="Show party stances on policies">
+        <option value="">🗳️ Party View: Off</option>
+      </select>
+    </header>
+    <div id="main">
+      <div id="graph-container">
+        <div id="cy"></div>
+        <div id="legend">
+          <span class="legend-item"><span class="dot problem"></span> Problem</span>
+          <span class="legend-item"><span class="dot cause"></span> Cause</span>
+          <span class="legend-item"><span class="dot solution"></span> Solution</span>
+          <span class="legend-item"><span class="dot policy"></span> Gov Policy</span>
+          <span class="legend-item"><span class="dot future_problem"></span> Future Risk</span>
+        </div>
+      </div>
+      <div id="sidebar">
+        <div id="sidebar-content">
+          <div class="placeholder">
+            <p>👈 Click a node to explore</p>
+            <p class="hint">
+              <strong style="color:#e74c3c">■</strong> Problems &nbsp;
+              <strong style="color:#e67e22">■</strong> Causes &nbsp;
+              <strong style="color:#2ecc71">■</strong> Solutions &nbsp;
+              <strong style="color:#3498db">■</strong> Gov Policy &nbsp;
+              <strong style="color:#8e44ad">■</strong> Future Risks
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
