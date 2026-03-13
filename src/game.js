@@ -23,26 +23,26 @@ const problemNodes = nodes.filter(n => n.type === 'problem');
 const policyNodes = nodes.filter(n => n.type === 'policy');
 
 // ── Constants ─────────────────────────────────────────────────────────────────
-const TOTAL_TURNS = 20;
+const TOTAL_TURNS = 14;  // Q1 2026 → Q2 2029
 const GOV_PARTY = 'party_labour';
-const OTHER_PCT = 4;
+const OTHER_PCT = 5;
 const POLL_TOTAL = 100 - OTHER_PCT;
 
+// March 2026 polling averages (YouGov/Opinium/aggregators)
 const STARTING_POLLS = {
-  party_labour: 28,
-  party_conservative: 25,
-  party_reform: 22,
-  party_libdem: 13,
-  party_green: 8,
+  party_reform: 25,
+  party_labour: 18,
+  party_conservative: 18,
+  party_green: 17,
+  party_libdem: 12,
 };
 
 const QUARTER_LABELS = [
-  'Q3 2024', 'Q4 2024', 'Q1 2025', 'Q2 2025',
-  'Q3 2025', 'Q4 2025', 'Q1 2026', 'Q2 2026',
-  'Q3 2026', 'Q4 2026', 'Q1 2027', 'Q2 2027',
-  'Q3 2027', 'Q4 2027', 'Q1 2028', 'Q2 2028',
-  'Q3 2028', 'Q4 2028', 'Q1 2029', 'Q2 2029',
-  'Q3 2029',
+  'Q1 2026', 'Q2 2026', 'Q3 2026', 'Q4 2026',
+  'Q1 2027', 'Q2 2027', 'Q3 2027', 'Q4 2027',
+  'Q1 2028', 'Q2 2028', 'Q3 2028', 'Q4 2028',
+  'Q1 2029', 'Q2 2029',
+  'Election',
 ];
 
 const partyMap = {};
@@ -477,22 +477,35 @@ function applyImplement(polls, policyId, severityChanges) {
   for (const party of parties) {
     const stance = stances[party.id];
     if (party.id === GOV_PARTY) {
-      if (stance === 'support') newPolls[party.id] += 1.5;
-      else if (stance === 'oppose') newPolls[party.id] -= 1.0;
-      else newPolls[party.id] += 0.3;
-    } else {
-      if (stance === 'support') newPolls[party.id] -= 0.5;
-      else if (stance === 'oppose') newPolls[party.id] += 1.0;
+      // Government implementing policy — modest boost if they support it
+      if (stance === 'support') newPolls[party.id] += 0.8;
+      else if (stance === 'oppose') newPolls[party.id] -= 1.5;
       else newPolls[party.id] += 0.2;
+    } else {
+      // Opposition parties react
+      if (stance === 'oppose') {
+        // Opposing a government policy they disagree with — modest boost
+        newPolls[party.id] += 0.6;
+      } else if (stance === 'support') {
+        // They agree with gov — voters may think "why not vote for the real thing?"
+        newPolls[party.id] -= 0.3;
+      }
     }
-    newPolls[party.id] += randRange(-0.5, 0.5);
+    newPolls[party.id] += randRange(-0.4, 0.4);
   }
 
-  // Bonus/penalty for problem effects
+  // Government bonus/penalty for problem effects (asymmetric — failures punished harder)
   const netImprovement = Object.values(severityChanges).reduce((s, v) => s + (v < 0 ? 1 : 0), 0);
   const netWorsening = Object.values(severityChanges).reduce((s, v) => s + (v > 0 ? 1 : 0), 0);
-  if (netImprovement > 0) newPolls[GOV_PARTY] += 1;
-  if (netWorsening > 0) newPolls[GOV_PARTY] -= 2;
+  if (netImprovement > 0) newPolls[GOV_PARTY] += 0.5 * netImprovement;
+  if (netWorsening > 0) newPolls[GOV_PARTY] -= 1.0 * netWorsening;
+
+  // Government fatigue — small bleed per turn
+  newPolls[GOV_PARTY] -= 0.2;
+  // Reform momentum — outsider protest vote advantage
+  newPolls['party_reform'] = (newPolls['party_reform'] || 0) + 0.15;
+  // Green momentum — youth enthusiasm
+  newPolls['party_green'] = (newPolls['party_green'] || 0) + 0.1;
 
   return normalizePolls(newPolls);
 }
@@ -501,15 +514,20 @@ function applyReject(polls, policyId) {
   const newPolls = clonePolls(polls);
   const stances = policyPopularity[policyId] || {};
 
+  // Government rejecting a policy — looks indecisive
+  newPolls[GOV_PARTY] -= 0.6;
+
   for (const party of parties) {
     const stance = stances[party.id];
-    if (party.id === GOV_PARTY) {
-      newPolls[party.id] -= 0.5;
-    } else if (stance === 'support') {
-      newPolls[party.id] += 0.5;
+    if (party.id !== GOV_PARTY && stance === 'support') {
+      newPolls[party.id] += 0.4;
     }
     newPolls[party.id] += randRange(-0.3, 0.3);
   }
+
+  // Background trends
+  newPolls['party_reform'] = (newPolls['party_reform'] || 0) + 0.15;
+  newPolls['party_green'] = (newPolls['party_green'] || 0) + 0.1;
 
   return normalizePolls(newPolls);
 }
@@ -519,47 +537,66 @@ function applySkip(polls) {
   for (const party of parties) {
     newPolls[party.id] += randRange(-0.3, 0.3);
   }
+  // Background trends: government fatigue, Reform/Green momentum
+  newPolls[GOV_PARTY] -= 0.3;
+  newPolls['party_reform'] = (newPolls['party_reform'] || 0) + 0.2;
+  newPolls['party_green'] = (newPolls['party_green'] || 0) + 0.1;
   return normalizePolls(newPolls);
 }
 
 // ── Seat estimation ───────────────────────────────────────────────────────────
 const TOTAL_SEATS = 650;
 
+// FPTP seat efficiency — how well each party converts votes to seats
+// Labour: strong urban concentration → efficient
+// Conservatives: suburban/rural base, but Reform splits their vote
+// Reform: concentrated in some areas but spread thin nationally
+// Lib Dems: very targeted campaigning, overperform vote share
+// Greens: very spread out nationally, few concentrated areas
+const SEAT_EFFICIENCY = {
+  party_labour: 1.4,
+  party_conservative: 0.85,
+  party_reform: 0.65,
+  party_libdem: 1.3,
+  party_green: 0.25,
+};
+
 function estimateSeats(polls) {
   const sorted = parties.map(p => ({ id: p.id, pct: polls[p.id] }))
     .sort((a, b) => b.pct - a.pct);
   const leader = sorted[0];
-  const seats = {};
 
-  if (leader.pct >= 35) {
-    // Strong lead → FPTP exaggeration
-    seats[leader.id] = Math.round(TOTAL_SEATS * 0.58);
-    const remaining = TOTAL_SEATS - seats[leader.id];
-    const otherSum = sorted.slice(1).reduce((s, p) => s + p.pct, 0);
-    for (let i = 1; i < sorted.length; i++) {
-      seats[sorted[i].id] = Math.round(remaining * (sorted[i].pct / otherSum));
-    }
-  } else if (leader.pct >= 30) {
-    seats[leader.id] = Math.round(TOTAL_SEATS * 0.48);
-    const remaining = TOTAL_SEATS - seats[leader.id];
-    const otherSum = sorted.slice(1).reduce((s, p) => s + p.pct, 0);
-    for (let i = 1; i < sorted.length; i++) {
-      seats[sorted[i].id] = Math.round(remaining * (sorted[i].pct / otherSum));
-    }
-  } else {
-    // Hung parliament territory — more proportional but still some bonus
-    const totalPct = sorted.reduce((s, p) => s + p.pct, 0);
-    for (const p of sorted) {
-      const share = p.pct / totalPct;
-      const bonus = p.id === leader.id ? 1.15 : 0.97;
-      seats[p.id] = Math.round(TOTAL_SEATS * share * bonus);
-    }
+  // Calculate effective vote share (vote % × efficiency)
+  const effective = {};
+  let effTotal = 0;
+  for (const p of sorted) {
+    effective[p.id] = p.pct * (SEAT_EFFICIENCY[p.id] || 1.0);
+    effTotal += effective[p.id];
   }
 
-  // Ensure total = 650
-  const seatSum = Object.values(seats).reduce((s, v) => s + v, 0);
-  if (seatSum !== TOTAL_SEATS) {
-    seats[leader.id] += TOTAL_SEATS - seatSum;
+  // FPTP bonus: leading party gets disproportionate seat share
+  const leaderPct = leader.pct;
+  let leaderBonus;
+  if (leaderPct >= 35) leaderBonus = 1.35;
+  else if (leaderPct >= 30) leaderBonus = 1.25;
+  else if (leaderPct >= 25) leaderBonus = 1.15;
+  else leaderBonus = 1.08;
+
+  effective[leader.id] *= leaderBonus;
+  effTotal = Object.values(effective).reduce((a, b) => a + b, 0);
+
+  // Allocate seats proportionally to effective share
+  const seats = {};
+  let allocated = 0;
+  for (const p of sorted) {
+    const share = effective[p.id] / effTotal;
+    seats[p.id] = Math.max(1, Math.round(TOTAL_SEATS * share));
+    allocated += seats[p.id];
+  }
+
+  // Adjust to hit exactly 650
+  if (allocated !== TOTAL_SEATS) {
+    seats[leader.id] += TOTAL_SEATS - allocated;
   }
 
   return seats;
