@@ -377,6 +377,94 @@ function injectStyles() {
   margin-top: 40px;
 }
 
+/* ── Party selection screen ── */
+.game-party-select {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  padding: 32px 16px;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #eee;
+  animation: fadeInOverlay 0.5s ease;
+}
+.game-party-select h2 {
+  font-size: 28px;
+  margin: 0 0 8px;
+}
+.game-party-select .party-select-desc {
+  color: #aaa;
+  font-size: 15px;
+  margin-bottom: 24px;
+  text-align: center;
+  max-width: 480px;
+  line-height: 1.5;
+}
+.game-party-select .party-select-note {
+  color: #888;
+  font-size: 12px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-style: italic;
+}
+.game-party-select .party-cards {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 700px;
+}
+.game-party-select .party-card {
+  background: #1a1a2e;
+  border: 2px solid #2a2a4a;
+  border-radius: 10px;
+  padding: 20px 18px;
+  width: 120px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+}
+.game-party-select .party-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+.game-party-select .party-card .party-swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+}
+.game-party-select .party-card .party-name {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+.game-party-select .party-card .party-poll {
+  font-size: 12px;
+  color: #aaa;
+}
+.game-party-select .party-card .party-gov-tag {
+  font-size: 10px;
+  color: #f1c40f;
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+/* ── Election player result banner ── */
+.election-player-result {
+  font-size: 20px;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+.election-row.player-party {
+  outline: 2px solid rgba(255, 255, 255, 0.3);
+  outline-offset: -2px;
+}
+
 /* ── Responsive ── */
 @media (max-width: 1024px) {
   .game-root {
@@ -387,6 +475,13 @@ function injectStyles() {
   .game-policy-card { grid-column: 1; grid-row: 2; }
   .game-polling { grid-column: 1; grid-row: 3; min-height: 250px; }
   .game-problems { grid-column: 1; grid-row: 4; }
+  .game-party-select .party-cards {
+    gap: 10px;
+  }
+  .game-party-select .party-card {
+    width: 100px;
+    padding: 14px 12px;
+  }
 }
 `;
   document.head.appendChild(style);
@@ -694,7 +789,8 @@ export function initGame(container) {
   injectStyles();
 
   // ── Game state ──
-  let state = createInitialState();
+  let playerParty = null;
+  let state = null;
 
   function createInitialState() {
     const shuffled = [...policyNodes].sort(() => Math.random() - 0.5);
@@ -713,7 +809,45 @@ export function initGame(container) {
     };
   }
 
+  // ── Party selection screen ──
+  function showPartySelect() {
+    container.style.position = 'relative';
+    container.innerHTML = '';
+
+    const selectScreen = document.createElement('div');
+    selectScreen.className = 'game-party-select';
+
+    const partyCards = parties.map(p => {
+      const poll = STARTING_POLLS[p.id] || 0;
+      const govTag = p.id === GOV_PARTY ? '<div class="party-gov-tag">★ IN GOVT</div>' : '';
+      return `<div class="party-card" data-party-id="${p.id}" style="border-color:${p.color}30">
+        <div class="party-swatch" style="background:${p.color}"></div>
+        <div class="party-name" style="color:${p.color}">${p.label}</div>
+        <div class="party-poll">${poll}% in polls</div>
+        ${govTag}
+      </div>`;
+    }).join('');
+
+    selectScreen.innerHTML = `
+      <h2>🗳️ Choose Your Party</h2>
+      <p class="party-select-desc">Pick a party and try to lead them to victory in the next general election.</p>
+      <p class="party-select-note">Labour is currently in government — all policies are theirs to implement or reject.</p>
+      <div class="party-cards">${partyCards}</div>
+    `;
+
+    container.appendChild(selectScreen);
+
+    selectScreen.querySelectorAll('.party-card').forEach(card => {
+      card.addEventListener('click', () => {
+        playerParty = card.dataset.partyId;
+        state = createInitialState();
+        buildGameDOM();
+      });
+    });
+  }
+
   // ── Build DOM ──
+  function buildGameDOM() {
   container.style.position = 'relative';
   container.innerHTML = '';
 
@@ -896,14 +1030,25 @@ export function initGame(container) {
       ? `${winner.label} wins a majority!`
       : `${winner.label} is the largest party — hung parliament`;
 
+    const playerWon = playerParty === winnerId;
+    const playerMsg = playerWon
+      ? '🎉 Victory! Your party won!'
+      : '😔 Defeat. Better luck next time.';
+    const playerColor = partyMap[playerParty]?.color || '#eee';
+
     const rows = parties
       .sort((a, b) => (seats[b.id] || 0) - (seats[a.id] || 0))
       .map(p => {
         const s = seats[p.id] || 0;
         const pct = state.polls[p.id] || 0;
         const isWinner = p.id === winnerId;
-        return `<div class="election-row${isWinner ? ' winner' : ''}" style="${isWinner ? `border-color:${p.color}` : ''}">
-          <span class="e-party" style="color:${p.color}">${p.label}</span>
+        const isPlayer = p.id === playerParty;
+        const classes = ['election-row'];
+        if (isWinner) classes.push('winner');
+        if (isPlayer) classes.push('player-party');
+        const borderStyle = isWinner ? `border-color:${p.color}` : '';
+        return `<div class="${classes.join(' ')}" style="${borderStyle}">
+          <span class="e-party" style="color:${p.color}">${p.label}${isPlayer ? ' ◂' : ''}</span>
           <span class="e-poll">${pct.toFixed(1)}%</span>
           <div class="e-bar-bg"><div class="e-bar-fill" style="width:${(s / TOTAL_SEATS) * 100}%;background:${p.color}"></div></div>
           <span class="e-seats">${s} seats</span>
@@ -915,6 +1060,7 @@ export function initGame(container) {
     overlay.innerHTML = `
       <div class="election-card">
         <h2 style="color:${winner.color}">🗳️ General Election ${QUARTER_LABELS[TOTAL_TURNS] || '2029'}</h2>
+        <p class="election-player-result" style="color:${playerColor}">${playerMsg}</p>
         <p class="winner-label">${resultLabel}</p>
         <div class="election-results-grid">${rows}</div>
         <button class="btn-play-again">🔄 Play Again</button>
@@ -923,12 +1069,7 @@ export function initGame(container) {
 
     container.appendChild(overlay);
     overlay.querySelector('.btn-play-again').onclick = () => {
-      overlay.remove();
-      state = createInitialState();
-      updateTimeline();
-      renderPolicyCard();
-      renderProblems();
-      redrawChart();
+      showPartySelect();
     };
   }
 
@@ -952,6 +1093,10 @@ export function initGame(container) {
   renderProblems();
   // Defer chart draw to next frame so canvas has layout dimensions
   requestAnimationFrame(() => redrawChart());
+  } // end buildGameDOM
+
+  // ── Start with party selection ──
+  showPartySelect();
 }
 
 // ── Utilities ─────────────────────────────────────────────────────────────────
