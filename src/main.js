@@ -1,5 +1,6 @@
 import cytoscape from 'cytoscape';
 import { nodes, edges, groups, nodeGroups, parties, policyPopularity } from './data.js';
+import { initDesigner } from './designer.js';
 
 // === Compute contribution weights (recursive) ===
 function computeWeights() {
@@ -1046,4 +1047,33 @@ function applyPartyView(partyId) {
 
 partySelect.addEventListener('change', () => {
   applyPartyView(partySelect.value);
+});
+
+// === Tab Switching ===
+let designerInitialised = false;
+const tabs = document.querySelectorAll('#tab-bar .tab');
+const views = document.querySelectorAll('.view');
+const explorerControls = document.getElementById('explorer-controls');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const target = tab.dataset.tab;
+
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+
+    views.forEach(v => v.classList.remove('active'));
+    document.getElementById(`view-${target}`).classList.add('active');
+
+    explorerControls.style.display = target === 'explorer' ? '' : 'none';
+
+    if (target === 'designer' && !designerInitialised) {
+      initDesigner(document.getElementById('view-designer'));
+      designerInitialised = true;
+    }
+
+    if (target === 'explorer') {
+      cy.resize();
+    }
+  });
 });

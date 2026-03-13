@@ -9,18 +9,27 @@
 <body>
   <div id="app">
     <header>
-      <h1>🔍 Root Cause</h1>
-      <p class="subtitle">Tracing the UK's problems to their roots</p>
-      <div id="horizon-control">
-        <label for="horizon-slider">🕐 Horizon:</label>
-        <input type="range" id="horizon-slider" min="0" max="3" value="1" step="1" />
-        <span id="horizon-label">Next Decade</span>
+      <div class="header-top">
+        <h1>🔍 Root Cause</h1>
+        <p class="subtitle">Tracing the UK's problems to their roots</p>
+        <div id="explorer-controls">
+          <div id="horizon-control">
+            <label for="horizon-slider">🕐 Horizon:</label>
+            <input type="range" id="horizon-slider" min="0" max="3" value="1" step="1" />
+            <span id="horizon-label">Next Decade</span>
+          </div>
+          <select id="party-select" title="Show party stances on policies">
+            <option value="">🗳️ Party View: Off</option>
+          </select>
+        </div>
       </div>
-      <select id="party-select" title="Show party stances on policies">
-        <option value="">🗳️ Party View: Off</option>
-      </select>
+      <nav id="tab-bar">
+        <button class="tab active" data-tab="explorer">🔍 Explorer</button>
+        <button class="tab" data-tab="designer">🏗️ Designer</button>
+        <button class="tab" data-tab="game">🎮 Game</button>
+      </nav>
     </header>
-    <div id="main">
+    <div id="view-explorer" class="view active">
       <div id="graph-container">
         <div id="loading"><div class="spinner"></div><p>Computing layout…</p></div>
         <div id="cy"></div>
@@ -45,6 +54,14 @@
             </p>
           </div>
         </div>
+      </div>
+    </div>
+    <div id="view-designer" class="view"></div>
+    <div id="view-game" class="view">
+      <div class="view-placeholder">
+        <div class="placeholder-icon">🎮</div>
+        <h2>Game Mode</h2>
+        <p>Coming soon…</p>
       </div>
     </div>
   </div>
