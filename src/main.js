@@ -1,6 +1,7 @@
 import cytoscape from 'cytoscape';
 import { nodes, edges, groups, nodeGroups, parties, policyPopularity } from './data.js';
 import { initDesigner } from './designer.js';
+import { initGame } from './game.js';
 
 // === Compute contribution weights (recursive) ===
 function computeWeights() {
@@ -1051,6 +1052,7 @@ partySelect.addEventListener('change', () => {
 
 // === Tab Switching ===
 let designerInitialised = false;
+let gameInitialised = false;
 const tabs = document.querySelectorAll('#tab-bar .tab');
 const views = document.querySelectorAll('.view');
 const explorerControls = document.getElementById('explorer-controls');
@@ -1070,6 +1072,11 @@ tabs.forEach(tab => {
     if (target === 'designer' && !designerInitialised) {
       initDesigner(document.getElementById('view-designer'));
       designerInitialised = true;
+    }
+
+    if (target === 'game' && !gameInitialised) {
+      initGame(document.getElementById('view-game'));
+      gameInitialised = true;
     }
 
     if (target === 'explorer') {
