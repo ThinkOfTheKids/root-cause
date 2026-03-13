@@ -1482,6 +1482,36 @@ export const nodes = [
   // --- Triple Lock Unsustainability ---
   { id: 'triple_lock_unsustainable', label: 'Triple Lock\nUnsustainability', type: 'cause', description: 'State pension triple lock (highest of inflation, earnings, 2.5%) is fiscally unsustainable with aging demographics. Could push pension age to 74 by 2060s. State pension spending projected to rise from 5% to 8%+ of GDP. Politically untouchable — 12m pensioner votes. Creates intergenerational unfairness.', sources: ['OBR', 'IFS', 'Resolution Foundation'] },
   { id: 'future_pension_age_rise', label: 'Pension Age\nRise to 71-74', type: 'future_problem', horizon: '30years', description: 'Without reform, pension age must rise dramatically or taxes on working-age population become unsustainable. Risk of pensioner poverty if state pension cut instead. No good options without early action.', sources: ['OBR', 'IFS', 'Pensions Policy Institute'] },
+
+  // ── CHILD ABUSE & SAFEGUARDING ──
+  { id: 'child_abuse_crisis', label: 'Child Abuse &\nSafeguarding Crisis', type: 'cause', description: '500,000+ child protection referrals/year in England. 50,000+ on child protection plans. Social worker vacancies at 17%. Serious Case Reviews repeatedly find same systemic failures. Post-Rotherham reforms still inadequate. 1 in 5 children experience abuse before age 18.', sources: ['DfE', 'NSPCC', 'Ofsted', 'Independent Inquiry into Child Sexual Abuse'] },
+  { id: 'child_exploitation', label: 'Child Sexual\nExploitation', type: 'cause', description: 'Grooming gangs in Rotherham, Rochdale, Telford, Oxford etc exposed systemic failures. 16,000+ potential victims identified by IICSA. Online CSAM referrals to IWF up 87% since 2019 (275,000+ reports/year). County lines: 27,000 children at risk of gang exploitation. Political football but structural causes (poverty, care system, policing) rarely addressed.', sources: ['IICSA', 'NCA', 'IWF', 'Children\'s Commissioner'] },
+  { id: 'children_in_care', label: 'Children in\nCare Crisis', type: 'cause', description: '83,840 looked-after children in England (highest ever). Private providers control 83% of children\'s homes, charging £4,000-5,000/week (£200k-260k/year per child). Outcomes: 41% of care leavers NEET at 19-21, 25% experience homelessness within 2 years. Total cost: £11bn/year. Fostering recruitment in freefall.', sources: ['DfE', 'Competition and Markets Authority', 'Ofsted', 'Care Review (Josh MacAlister)'] },
+  { id: 'social_worker_shortage', label: 'Social Worker\nShortage', type: 'cause', description: 'Children\'s social worker vacancy rate 17% nationally (30%+ in London). Average caseload 18-25 children (recommended max: 15). 1 in 3 leave within first 2 years. Agency staff cost councils 3x more. Burnout epidemic: 78% report unsustainable stress. Victoria Climbié, Baby P, Arthur Labinjo-Hughes — recurring tragedies linked to overworked staff.', sources: ['DfE', 'BASW', 'Community Care', 'What Works Centre for Children\'s Social Care'] },
+  { id: 'sol_child_safeguarding', label: 'Child Safeguarding\nReform', type: 'solution', description: 'Implement MacAlister Care Review: regional care cooperatives to break private provider monopoly, mandatory reporting of child abuse, social worker bursary scheme, supervised year for newly qualified workers, multi-agency safeguarding hubs in every area, family help system to intervene earlier.', politicalDifficulty: 'medium', economicDifficulty: 'medium', practicality: 4, sideEffectRisk: 'low', riskDetail: 'Private care home industry will lobby against; requires sustained funding commitment; culture change takes years', sources: ['MacAlister Care Review', 'NSPCC', 'ADCS'] },
+  { id: 'sol_online_child_protection', label: 'Online Child\nProtection', type: 'solution', description: 'Privacy-preserving age assurance (not ID upload), platform duty of care for children, mandatory CSAM scanning with independent oversight, design codes for children\'s apps, digital literacy in schools, dedicated online child exploitation policing units.', politicalDifficulty: 'easy', economicDifficulty: 'easy', practicality: 3, sideEffectRisk: 'medium', riskDetail: 'Tension between privacy and child safety; risk of overblocking; false positives in CSAM scanning; surveillance scope creep', sources: ['5Rights Foundation', 'IWF', 'Children\'s Commissioner', 'ICO'] },
+
+  // ── YOUTH MENTAL HEALTH ──
+  { id: 'youth_mental_health', label: 'Youth Mental\nHealth Crisis', type: 'cause', description: '1 in 5 children aged 8-16 have a probable mental disorder (up from 1 in 9 in 2017). CAMHS waiting lists: 400,000+ children waiting, average wait 18 months. Self-harm hospital admissions for girls up 68% in decade. Social media linked to anxiety, body image issues, sleep disruption. 75% of adult mental illness starts before age 18 — early intervention saves £10 for every £1 spent.', sources: ['NHS Digital', 'Young Minds', 'Children\'s Commissioner', 'Royal College of Psychiatrists'] },
+  { id: 'sol_youth_mental_health', label: 'Youth Mental\nHealth Investment', type: 'solution', description: 'Counsellor in every school, CAMHS waiting time guarantee (4 weeks), social media age verification with design codes, mental health first aid training for teachers, early intervention hubs, parental support programmes, regulate addictive app design for under-18s.', politicalDifficulty: 'easy', economicDifficulty: 'medium', practicality: 4, sideEffectRisk: 'low', riskDetail: 'Workforce shortage for counsellors; medicalisation concerns; school capacity constraints', sources: ['Young Minds', 'Anna Freud Centre', 'Mental Health Foundation'] },
+  { id: 'future_social_media_harm', label: 'Social Media\nGeneration Damage', type: 'future_problem', horizon: 'decade', description: 'First generation raised on smartphones/social media showing unprecedented mental health deterioration. Algorithm-driven radicalisation, body image crisis, attention span reduction, sleep disruption. Long-term effects on cognitive development, social skills, and democratic participation unknown.', sources: ['Jonathan Haidt', 'Jean Twenge', 'Royal Society for Public Health'] },
+
+  // ── COMMUNITY COHESION & IMMIGRATION (BALANCED) ──
+  { id: 'community_cohesion', label: 'Community\nCohesion Strain', type: 'cause', description: 'Casey Review (2016) found increasing segregation in some areas. 40% of ethnic minorities report experiencing discrimination. Parallel communities with limited interaction. Integration outcomes vary hugely by group. Genuine concerns weaponised by far-right. Net migration of 685,000 (2023) creating housing/service pressure faster than infrastructure expands.', sources: ['Casey Review', 'Policy Exchange', 'Runnymede Trust', 'Migration Observatory'] },
+  { id: 'asylum_system_failure', label: 'Asylum System\nFailure', type: 'cause', description: '175,000+ asylum backlog. Average decision wait: 15 months (was 6 months in 2014). £8m/day on hotel accommodation. No right to work while waiting, creating dependency and resentment. Rwanda policy cost £700m for zero deportations. Both "too harsh" and "too soft" simultaneously. Safe routes would reduce channel crossings but politically toxic.', sources: ['Home Office', 'Refugee Council', 'NAO', 'UNHCR'] },
+  { id: 'sol_integration_strategy', label: 'Integration\nStrategy', type: 'solution', description: 'Community-based integration programmes (ESOL funding, mentoring, mixed housing), points-based immigration with regional variation, fast asylum processing (6-month guarantee), right to work for asylum seekers, counter-extremism with community engagement not surveillance, local integration boards.', politicalDifficulty: 'hard', economicDifficulty: 'easy', practicality: 3, sideEffectRisk: 'medium', riskDetail: 'Perceived as "soft" by right; implementation varies by local context; requires cross-party commitment', sources: ['Casey Review', 'Migration Advisory Committee', 'UNHCR', 'British Future'] },
+
+  // ── KNIFE CRIME & YOUTH VIOLENCE ──
+  { id: 'knife_crime', label: 'Knife Crime &\nYouth Violence', type: 'cause', description: '49,000+ knife crime offences/year in England & Wales. 30% of victims under 25. 282 knife homicides in 2023. County lines: 2,000+ drug lines exploiting children. Youth service funding cut 73% since 2010 — direct correlation with rising youth violence. Public health approach (Glasgow model) reduced knife crime 69% but rarely replicated.', sources: ['ONS', 'Youth Violence Commission', 'Violence Reduction Units', 'Home Office'] },
+  { id: 'sol_violence_reduction', label: 'Public Health\nViolence Approach', type: 'solution', description: 'Glasgow model: treat violence as public health issue not just criminal justice. Targeted mentoring, hospital-based intervention (33% reoffending reduction), youth outreach workers, restore youth service funding, trauma-informed policing, early intervention with at-risk families. Every £1 spent saves £14 in criminal justice costs.', politicalDifficulty: 'medium', economicDifficulty: 'easy', practicality: 5, sideEffectRisk: 'low', riskDetail: 'Seen as "soft on crime" by some; requires multi-agency coordination; results take years', sources: ['Scottish Violence Reduction Unit', 'Youth Endowment Fund', 'WHO'] },
+
+  // ── DEFENCE & SECURITY ──
+  { id: 'defence_underfunding', label: 'Defence &\nSecurity Gap', type: 'cause', description: 'UK defence spending 2.3% GDP (NATO target 2.5%, rising to 3%). Armed forces smallest since Napoleonic era (73,000 regular army). Equipment procurement £17bn over budget. Hollowed-out capabilities: 2 carriers but not enough escorts, ammunition stocks depleted. Ukraine war exposed European dependence on US.', sources: ['NAO', 'RUSI', 'House of Commons Defence Committee', 'IISS'] },
+  { id: 'sol_defence_investment', label: 'Defence\nModernisation', type: 'solution', description: 'Commit to 3% GDP defence spending, prioritise procurement reform, invest in drones/AI/cyber over legacy platforms, European defence cooperation post-Ukraine, rebuild ammunition stockpiles, armed forces recruitment/retention reform (40% attrition in first 4 years).', politicalDifficulty: 'medium', economicDifficulty: 'hard', practicality: 3, sideEffectRisk: 'medium', riskDetail: 'Competes with domestic spending; procurement reform resisted by defence industry; European cooperation complicated post-Brexit', sources: ['RUSI', 'IISS', 'NATO', 'House of Commons Defence Committee'] },
+  { id: 'future_security_vacuum', label: 'European\nSecurity Vacuum', type: 'future_problem', horizon: 'decade', description: 'US pivot to Indo-Pacific and potential NATO drawdown. Europe lacks independent defence capability. Russian revanchism, Chinese assertiveness, hybrid warfare increasing. Defence industrial base hollowed out — can\'t surge production.', sources: ['RUSI', 'ECFR', 'Chatham House'] },
+
+  // ── BALANCED PERSPECTIVES ──
+  { id: 'brexit_sovereignty', label: 'Regulatory\nIndependence', type: 'cause', description: 'Brexit delivered regulatory autonomy: own trade deals, immigration policy, fishing rights. UK-Australia/NZ deals. Freeports. Potential divergence in AI, fintech, gene editing. However, economic costs (4% GDP hit per OBR) have so far outweighed sovereignty benefits. Political class divided on divergence vs re-alignment.', sources: ['UK Trade Policy Observatory', 'OBR', 'Institute for Government'] },
 ];
 
 export const edges = [
@@ -2177,6 +2207,77 @@ export const edges = [
   { source: 'future_aging_population', target: 'triple_lock_unsustainable', label: 'causes' },
   { source: 'future_birthrate_decline', target: 'triple_lock_unsustainable', label: 'causes' },
   { source: 'triple_lock_unsustainable', target: 'future_pension_age_rise', label: 'causes' },
+
+  // ── Child Abuse & Safeguarding edges ──
+  { source: 'child_abuse_crisis', target: 'mental_health_crisis', label: 'causes' },
+  { source: 'child_abuse_crisis', target: 'crime_social', label: 'causes' },
+  { source: 'child_abuse_crisis', target: 'homelessness', label: 'causes' },
+  { source: 'child_abuse_crisis', target: 'children_in_care', label: 'causes' },
+  { source: 'poverty_deprivation', target: 'child_abuse_crisis', label: 'causes' },
+  { source: 'social_worker_shortage', target: 'child_abuse_crisis', label: 'causes' },
+  { source: 'austerity', target: 'social_worker_shortage', label: 'causes' },
+  { source: 'local_govt_crisis', target: 'social_worker_shortage', label: 'causes' },
+  { source: 'child_exploitation', target: 'child_abuse_crisis', label: 'causes' },
+  { source: 'policing_cuts', target: 'child_exploitation', label: 'causes' },
+  { source: 'poverty_deprivation', target: 'child_exploitation', label: 'causes' },
+  { source: 'children_in_care', target: 'child_exploitation', label: 'causes' },
+  { source: 'children_in_care', target: 'homelessness', label: 'causes' },
+  { source: 'children_in_care', target: 'mental_health_crisis', label: 'causes' },
+  { source: 'children_in_care', target: 'social_mobility_decline', label: 'causes' },
+  { source: 'local_govt_crisis', target: 'children_in_care', label: 'causes' },
+  { source: 'sol_child_safeguarding', target: 'child_abuse_crisis', label: 'solves' },
+  { source: 'sol_child_safeguarding', target: 'children_in_care', label: 'solves' },
+  { source: 'sol_child_safeguarding', target: 'social_worker_shortage', label: 'solves' },
+  { source: 'sol_online_child_protection', target: 'child_exploitation', label: 'solves' },
+  { source: 'pol_online_safety_act', target: 'sol_online_child_protection', label: 'implements' },
+
+  // ── Youth Mental Health edges ──
+  { source: 'youth_mental_health', target: 'mental_health_crisis', label: 'causes' },
+  { source: 'youth_mental_health', target: 'education_crisis', label: 'causes' },
+  { source: 'youth_mental_health', target: 'attainment_gap', label: 'causes' },
+  { source: 'youth_mental_health', target: 'knife_crime', label: 'causes' },
+  { source: 'poverty_deprivation', target: 'youth_mental_health', label: 'causes' },
+  { source: 'child_abuse_crisis', target: 'youth_mental_health', label: 'causes' },
+  { source: 'nhs_underfunding', target: 'youth_mental_health', label: 'causes' },
+  { source: 'school_funding_squeeze', target: 'youth_mental_health', label: 'causes' },
+  { source: 'youth_mental_health', target: 'future_social_media_harm', label: 'causes' },
+  { source: 'sol_youth_mental_health', target: 'youth_mental_health', label: 'solves' },
+  { source: 'sol_youth_mental_health', target: 'future_social_media_harm', label: 'solves' },
+
+  // ── Community Cohesion & Immigration edges ──
+  { source: 'population_pressure', target: 'community_cohesion', label: 'causes' },
+  { source: 'asylum_system_failure', target: 'community_cohesion', label: 'causes' },
+  { source: 'austerity', target: 'community_cohesion', label: 'causes' },
+  { source: 'community_cohesion', target: 'political_disconnect', label: 'causes' },
+  { source: 'community_cohesion', target: 'crime_social', label: 'causes' },
+  { source: 'community_cohesion', target: 'voter_apathy', label: 'causes' },
+  { source: 'centralised_governance', target: 'asylum_system_failure', label: 'causes' },
+  { source: 'asylum_system_failure', target: 'political_disconnect', label: 'causes' },
+  { source: 'asylum_system_failure', target: 'cost_of_living', label: 'causes' },
+  { source: 'sol_integration_strategy', target: 'community_cohesion', label: 'solves' },
+  { source: 'sol_integration_strategy', target: 'asylum_system_failure', label: 'solves' },
+  { source: 'pol_immigration_wp', target: 'sol_integration_strategy', label: 'implements' },
+
+  // ── Knife Crime edges ──
+  { source: 'knife_crime', target: 'crime_social', label: 'causes' },
+  { source: 'poverty_deprivation', target: 'knife_crime', label: 'causes' },
+  { source: 'policing_cuts', target: 'knife_crime', label: 'causes' },
+  { source: 'youth_service_cuts', target: 'knife_crime', label: 'causes' },
+  { source: 'child_exploitation', target: 'knife_crime', label: 'causes' },
+  { source: 'sol_violence_reduction', target: 'knife_crime', label: 'solves' },
+  { source: 'pol_crime_bill', target: 'sol_violence_reduction', label: 'implements' },
+
+  // ── Defence edges ──
+  { source: 'austerity', target: 'defence_underfunding', label: 'causes' },
+  { source: 'low_growth', target: 'defence_underfunding', label: 'causes' },
+  { source: 'defence_underfunding', target: 'future_security_vacuum', label: 'causes' },
+  { source: 'brexit_impact', target: 'defence_underfunding', label: 'causes' },
+  { source: 'sol_defence_investment', target: 'defence_underfunding', label: 'solves' },
+  { source: 'sol_defence_investment', target: 'future_security_vacuum', label: 'solves' },
+
+  // ── Brexit sovereignty edges ──
+  { source: 'brexit_impact', target: 'brexit_sovereignty', label: 'causes' },
+  { source: 'brexit_sovereignty', target: 'sol_trade_diversification', label: 'causes' },
 ];
 
 // ════════════════════════════════════════════════
@@ -2196,6 +2297,8 @@ export const groups = [
   { id: 'grp_food', label: '🍽️ Food & Public Health', color: '#e88a1a' },
   { id: 'grp_social', label: '🤝 Social Fabric', color: '#8e6cc2' },
   { id: 'grp_local', label: '🏛️ Local Government', color: '#d4795c' },
+  { id: 'grp_children', label: '👶 Children & Safeguarding', color: '#ff6b9d' },
+  { id: 'grp_defence', label: '🛡️ Defence & Security', color: '#607d8b' },
 ];
 
 export const nodeGroups = {
@@ -2462,6 +2565,32 @@ export const nodeGroups = {
   sol_digital_inclusion: 'grp_digital',
   triple_lock_unsustainable: 'grp_economy',
   future_pension_age_rise: 'grp_economy',
+
+  // Children & Safeguarding
+  child_abuse_crisis: 'grp_children',
+  child_exploitation: 'grp_children',
+  children_in_care: 'grp_children',
+  social_worker_shortage: 'grp_children',
+  sol_child_safeguarding: 'grp_children',
+  sol_online_child_protection: 'grp_children',
+  youth_mental_health: 'grp_children',
+  sol_youth_mental_health: 'grp_children',
+  future_social_media_harm: 'grp_children',
+
+  // Crime & Society additions
+  knife_crime: 'grp_crime',
+  sol_violence_reduction: 'grp_crime',
+  community_cohesion: 'grp_crime',
+  asylum_system_failure: 'grp_crime',
+  sol_integration_strategy: 'grp_crime',
+
+  // Defence & Security
+  defence_underfunding: 'grp_defence',
+  sol_defence_investment: 'grp_defence',
+  future_security_vacuum: 'grp_defence',
+
+  // Economy additions
+  brexit_sovereignty: 'grp_economy',
 };
 
 // ════════════════════════════════════════════════

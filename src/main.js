@@ -396,7 +396,7 @@ cy.layout({
 // Influence threshold: only follow the top branches that account for this
 // fraction of total influence at each node (prevents everything lighting up)
 const INFLUENCE_THRESHOLD = 0.8;
-const HOP_DECAY = 0.8; // multiply effective threshold by this each hop
+const HOP_DECAY = 0.55; // multiply effective threshold by this each hop
 
 function getUpstreamTrail(nodeId, visitedNodes = new Set(), trailEdges = new Set(), depth = 0) {
   if (visitedNodes.has(nodeId)) return { nodes: visitedNodes, edges: trailEdges };
