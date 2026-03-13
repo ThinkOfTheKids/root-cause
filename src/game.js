@@ -52,7 +52,8 @@ parties.forEach(p => { partyMap[p.id] = p; });
 const STYLE_ID = 'game-module-styles';
 
 function injectStyles() {
-  if (document.getElementById(STYLE_ID)) return;
+  const existing = document.getElementById(STYLE_ID);
+  if (existing) existing.remove();
   const style = document.createElement('style');
   style.id = STYLE_ID;
   style.textContent = `
@@ -68,7 +69,7 @@ function injectStyles() {
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: #eee;
-  overflow: hidden;
+  overflow: auto;
 }
 
 /* ── Timeline bar ── */
@@ -175,7 +176,7 @@ function injectStyles() {
 .game-policy-card .impact-item.negative { color: #e74c3c; }
 
 .game-actions {
-  margin-top: auto;
+  margin-top: 16px;
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -377,13 +378,14 @@ function injectStyles() {
 }
 
 /* ── Responsive ── */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .game-root {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto auto;
+    overflow: auto;
   }
   .game-policy-card { grid-column: 1; grid-row: 2; }
-  .game-polling { grid-column: 1; grid-row: 3; }
+  .game-polling { grid-column: 1; grid-row: 3; min-height: 250px; }
   .game-problems { grid-column: 1; grid-row: 4; }
 }
 `;
