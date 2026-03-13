@@ -119,7 +119,7 @@ export const nodes = [
   {
     id: 'social_care_failure',
     label: 'Social Care\nFailure',
-    type: 'cause',
+    type: 'problem',
     description: '13,600 hospital beds/day blocked by patients who can\'t be discharged due to inadequate social care. The sector has 165,000 vacancies. Successive governments have failed to reform it.',
     sources: ['King\'s Fund', 'NHS England', 'Care Quality Commission'],
   },
@@ -278,7 +278,7 @@ export const nodes = [
   {
     id: 'mental_health_crisis',
     label: 'Mental Health\nCrisis',
-    type: 'cause',
+    type: 'problem',
     description: 'Demand for mental health services has surged post-pandemic while provision remains inadequate. Long waits for CAMHS. Adult mental health beds cut by 25% since 2010.',
     sources: ['Mind', 'NHS Digital', 'Royal College of Psychiatrists'],
   },
@@ -424,7 +424,7 @@ export const nodes = [
   {
     id: 'poverty_deprivation',
     label: 'Poverty &\nDeprivation',
-    type: 'cause',
+    type: 'problem',
     description: 'Poverty is a central risk factor for crime, poor health, low attainment, and social breakdown. Welfare retrenchment post-2010 deepened hardship. 4.3 million children live in poverty.',
     sources: ['Joseph Rowntree Foundation', 'Child Poverty Action Group', 'Social Metrics Commission'],
   },
@@ -874,6 +874,19 @@ export const nodes = [
     riskDetail: 'Technically infeasible to fully enforce, damages UK cybersecurity industry, drives tech talent abroad, weakens infrastructure security for all users',
     sources: ['Investigatory Powers Commissioner', 'techUK', 'ISPA', 'Big Brother Watch'],
   },
+  {
+    id: 'pol_digital_id',
+    label: 'Digital ID\nProgramme',
+    type: 'policy',
+    status: 'proposed',
+    description: 'Labour\'s push for a digital identity framework. GOV.UK One Login as the foundation for a unified digital ID system, expanding to verify identity for benefits, banking, age verification, and public services. Voluntary initially but likely to become essential.',
+    politicalDifficulty: 'hard',
+    economicDifficulty: 'medium',
+    practicality: 3,
+    sideEffectRisk: 'high',
+    riskDetail: 'Privacy concerns, exclusion of digitally excluded populations, single point of failure for identity fraud, scope creep into surveillance infrastructure',
+    sources: ['GDS', 'Open Rights Group', 'Tony Blair Institute', 'Cabinet Office'],
+  },
   { id: 'pol_employer_ni_hike', label: 'Employer NI\nIncrease', type: 'policy', status: 'active', description: 'From April 2025, employer National Insurance rate rose from 13.8% to 15%, and the payment threshold dropped from £9,100 to £5,000 per employee. Oxford Economics estimates ~55,000 job cuts. The OBR projects 76% of the cost will be passed to workers through lower real wages. Disproportionately impacts labour-intensive sectors (hospitality, retail, social care) and SMEs. Employment Allowance increased to £10,500 to partially offset for small businesses.', politicalDifficulty: 'Hard', economicDifficulty: 'Hard', practicality: 3, sideEffectRisk: 'High', riskDetail: 'Job losses concentrated in low-wage sectors; risks accelerating social care provider collapse; may push businesses toward automation/offshoring', sources: ['OBR', 'Oxford Economics', 'GOV.UK'] },
   { id: 'pol_frozen_thresholds', label: 'Frozen Tax\nThresholds', type: 'policy', status: 'active', description: 'Income tax thresholds frozen at 2021-22 levels until at least 2028 (originally Conservative policy, continued by Labour). Personal allowance frozen at £12,570, higher rate at £50,270. Creates 780,000 new basic-rate and 920,000 new higher-rate taxpayers by 2029-30. Raises an estimated £25.5bn/year by end of freeze. Widely described as a "stealth tax" that avoids headline rate increases while substantially increasing the tax burden on working people.', politicalDifficulty: 'Easy', economicDifficulty: 'Easy', practicality: 5, sideEffectRisk: 'Medium', riskDetail: 'Erodes trust in "no tax rises for working people" pledges; regressive impact on middle earners; reduces consumer spending power', sources: ['House of Commons Library', 'IFS', 'OBR'] },
 
@@ -952,6 +965,13 @@ export const nodes = [
     description: 'Combined effect of facial recognition, bulk data collection, ISP monitoring, and encryption backdoors creates infrastructure for mass surveillance. Once built, very difficult to dismantle regardless of government.',
     sources: ['Big Brother Watch', 'Privacy International', 'Investigatory Powers Commissioner'],
     horizon: 'decade',
+  },
+  {
+    id: 'future_digital_id_abuse',
+    label: 'Digital ID\nAbuse',
+    type: 'future_problem',
+    description: 'Centralised digital ID becomes tool for tracking, profiling, and controlling citizens. Function creep from voluntary to mandatory. Single point of failure creates catastrophic identity fraud risk. Exclusion of elderly, homeless, and digitally marginalised populations.',
+    sources: ['Privacy International', 'Open Rights Group', 'Big Brother Watch'],
   },
   {
     id: 'future_transition_costs',
@@ -1241,6 +1261,18 @@ export const nodes = [
     riskDetail: 'Child safety campaigners may oppose; requires nuanced public communication',
     sources: ['techUK', 'Open Rights Group', 'Carnegie UK'],
   },
+  {
+    id: 'sol_digital_identity',
+    label: 'Digital Identity\nVerification',
+    type: 'solution',
+    description: 'Streamlined identity verification for public services, reducing fraud and improving access. Could eliminate need for physical documents, speed up benefit claims, and reduce identity theft if implemented with privacy safeguards.',
+    politicalDifficulty: 'medium',
+    economicDifficulty: 'medium',
+    practicality: 3,
+    sideEffectRisk: 'medium',
+    riskDetail: 'Depends entirely on implementation; privacy-preserving vs surveillance architecture',
+    sources: ['GDS', 'Open Rights Group'],
+  },
   { id: 'sol_threshold_indexation', label: 'Index Tax\nThresholds', type: 'solution', description: 'Restore automatic inflation-indexation of income tax thresholds to end fiscal drag. Would cost Treasury ~£25bn/year but restore ~£1,300/year to average taxpayer. Could be phased in over 2-3 years to manage fiscal impact. Addresses the regressive nature of frozen thresholds and restores trust in "no stealth taxes" commitment.', politicalDifficulty: 'Hard', economicDifficulty: 'Hard', practicality: 4, sideEffectRisk: 'Low', riskDetail: 'Large fiscal cost requires offsetting spending cuts or other revenue sources', sources: ['IFS', 'Resolution Foundation'] },
   { id: 'sol_trade_diversification', label: 'Trade\nDiversification', type: 'solution', description: 'Accelerate trade agreements with non-US partners (CPTPP implementation, India, Gulf states) to reduce vulnerability to US tariff threats. Strengthen UK-EU trade relationship via regulatory alignment on goods. Develop export support programs for SMEs to access new markets. Post-Brexit, UK has flexibility to pursue independent trade policy but lacks the leverage of a larger trading bloc.', politicalDifficulty: 'Medium', economicDifficulty: 'Medium', practicality: 3, sideEffectRisk: 'Low', riskDetail: 'New trade deals take years to negotiate and may require regulatory compromises', sources: ['Trade Policy Observatory', 'House of Commons Library'] },
   { id: 'sol_eu_financial_alignment', label: 'EU Financial\nAlignment', type: 'solution', description: 'Negotiate mutual recognition of financial regulations with the EU to restore some passporting-like access for UK financial firms. Would stem the flow of jobs, listings, and assets to EU centres. Requires balancing sovereignty concerns with pragmatic market access needs. The EU has limited incentive to agree unless UK aligns on key standards.', politicalDifficulty: 'Hard', economicDifficulty: 'Easy', practicality: 2, sideEffectRisk: 'Medium', riskDetail: 'Politically toxic for both parties — seen as "rejoining by stealth" by Brexiteers, insufficient by Remainers', sources: ['UK in a Changing Europe', 'City of London Corp'] },
@@ -1484,7 +1516,7 @@ export const nodes = [
   { id: 'future_pension_age_rise', label: 'Pension Age\nRise to 71-74', type: 'future_problem', horizon: '30years', description: 'Without reform, pension age must rise dramatically or taxes on working-age population become unsustainable. Risk of pensioner poverty if state pension cut instead. No good options without early action.', sources: ['OBR', 'IFS', 'Pensions Policy Institute'] },
 
   // ── CHILD ABUSE & SAFEGUARDING ──
-  { id: 'child_abuse_crisis', label: 'Child Abuse &\nSafeguarding Crisis', type: 'cause', description: '500,000+ child protection referrals/year in England. 50,000+ on child protection plans. Social worker vacancies at 17%. Serious Case Reviews repeatedly find same systemic failures. Post-Rotherham reforms still inadequate. 1 in 5 children experience abuse before age 18.', sources: ['DfE', 'NSPCC', 'Ofsted', 'Independent Inquiry into Child Sexual Abuse'] },
+  { id: 'child_abuse_crisis', label: 'Child Abuse &\nSafeguarding Crisis', type: 'problem', description: '500,000+ child protection referrals/year in England. 50,000+ on child protection plans. Social worker vacancies at 17%. Serious Case Reviews repeatedly find same systemic failures. Post-Rotherham reforms still inadequate. 1 in 5 children experience abuse before age 18.', sources: ['DfE', 'NSPCC', 'Ofsted', 'Independent Inquiry into Child Sexual Abuse'] },
   { id: 'child_exploitation', label: 'Child Sexual\nExploitation', type: 'cause', description: 'Grooming gangs in Rotherham, Rochdale, Telford, Oxford etc exposed systemic failures. 16,000+ potential victims identified by IICSA. Online CSAM referrals to IWF up 87% since 2019 (275,000+ reports/year). County lines: 27,000 children at risk of gang exploitation. Political football but structural causes (poverty, care system, policing) rarely addressed.', sources: ['IICSA', 'NCA', 'IWF', 'Children\'s Commissioner'] },
   { id: 'children_in_care', label: 'Children in\nCare Crisis', type: 'cause', description: '83,840 looked-after children in England (highest ever). Private providers control 83% of children\'s homes, charging £4,000-5,000/week (£200k-260k/year per child). Outcomes: 41% of care leavers NEET at 19-21, 25% experience homelessness within 2 years. Total cost: £11bn/year. Fostering recruitment in freefall.', sources: ['DfE', 'Competition and Markets Authority', 'Ofsted', 'Care Review (Josh MacAlister)'] },
   { id: 'social_worker_shortage', label: 'Social Worker\nShortage', type: 'cause', description: 'Children\'s social worker vacancy rate 17% nationally (30%+ in London). Average caseload 18-25 children (recommended max: 15). 1 in 3 leave within first 2 years. Agency staff cost councils 3x more. Burnout epidemic: 78% report unsustainable stress. Victoria Climbié, Baby P, Arthur Labinjo-Hughes — recurring tragedies linked to overworked staff.', sources: ['DfE', 'BASW', 'Community Care', 'What Works Centre for Children\'s Social Care'] },
@@ -1506,7 +1538,7 @@ export const nodes = [
   { id: 'sol_violence_reduction', label: 'Public Health\nViolence Approach', type: 'solution', description: 'Glasgow model: treat violence as public health issue not just criminal justice. Targeted mentoring, hospital-based intervention (33% reoffending reduction), youth outreach workers, restore youth service funding, trauma-informed policing, early intervention with at-risk families. Every £1 spent saves £14 in criminal justice costs.', politicalDifficulty: 'medium', economicDifficulty: 'easy', practicality: 5, sideEffectRisk: 'low', riskDetail: 'Seen as "soft on crime" by some; requires multi-agency coordination; results take years', sources: ['Scottish Violence Reduction Unit', 'Youth Endowment Fund', 'WHO'] },
 
   // ── DEFENCE & SECURITY ──
-  { id: 'defence_underfunding', label: 'Defence &\nSecurity Gap', type: 'cause', description: 'UK defence spending 2.3% GDP (NATO target 2.5%, rising to 3%). Armed forces smallest since Napoleonic era (73,000 regular army). Equipment procurement £17bn over budget. Hollowed-out capabilities: 2 carriers but not enough escorts, ammunition stocks depleted. Ukraine war exposed European dependence on US.', sources: ['NAO', 'RUSI', 'House of Commons Defence Committee', 'IISS'] },
+  { id: 'defence_underfunding', label: 'Defence &\nSecurity Gap', type: 'problem', description: 'UK defence spending 2.3% GDP (NATO target 2.5%, rising to 3%). Armed forces smallest since Napoleonic era (73,000 regular army). Equipment procurement £17bn over budget. Hollowed-out capabilities: 2 carriers but not enough escorts, ammunition stocks depleted. Ukraine war exposed European dependence on US.', sources: ['NAO', 'RUSI', 'House of Commons Defence Committee', 'IISS'] },
   { id: 'sol_defence_investment', label: 'Defence\nModernisation', type: 'solution', description: 'Commit to 3% GDP defence spending, prioritise procurement reform, invest in drones/AI/cyber over legacy platforms, European defence cooperation post-Ukraine, rebuild ammunition stockpiles, armed forces recruitment/retention reform (40% attrition in first 4 years).', politicalDifficulty: 'medium', economicDifficulty: 'hard', practicality: 3, sideEffectRisk: 'medium', riskDetail: 'Competes with domestic spending; procurement reform resisted by defence industry; European cooperation complicated post-Brexit', sources: ['RUSI', 'IISS', 'NATO', 'House of Commons Defence Committee'] },
   { id: 'future_security_vacuum', label: 'European\nSecurity Vacuum', type: 'future_problem', horizon: 'decade', description: 'US pivot to Indo-Pacific and potential NATO drawdown. Europe lacks independent defence capability. Russian revanchism, Chinese assertiveness, hybrid warfare increasing. Defence industrial base hollowed out — can\'t surge production.', sources: ['RUSI', 'ECFR', 'Chatham House'] },
 
@@ -1860,6 +1892,13 @@ export const edges = [
   { source: 'pol_vpn_ip_bill', target: 'future_uk_tech_exodus', label: 'risks' },
   { source: 'pol_vpn_ip_bill', target: 'future_encryption_weakening', label: 'risks' },
   { source: 'pol_crime_bill', target: 'future_surveillance_normalisation', label: 'risks' },
+  { source: 'pol_digital_id', target: 'sol_digital_identity', label: 'implements' },
+  { source: 'sol_digital_identity', target: 'future_id_fraud_risk', label: 'solves' },
+  { source: 'pol_digital_id', target: 'future_digital_id_abuse', label: 'risks' },
+  { source: 'pol_digital_id', target: 'future_surveillance_normalisation', label: 'risks' },
+  { source: 'future_digital_id_abuse', target: 'democratic_deficit', label: 'causes' },
+  { source: 'future_digital_id_abuse', target: 'poverty_deprivation', label: 'causes' },
+  { source: 'future_digital_id_abuse', target: 'crime_social', label: 'causes' },
 
   // --- Blind Spot Risks ---
   { source: 'pol_employer_ni_hike', target: 'future_sme_collapse', label: 'risks' },
@@ -2472,6 +2511,9 @@ export const nodeGroups = {
   sol_encryption_protection: 'grp_digital',
   sol_digital_rights_bill: 'grp_digital',
   sol_osa_reform: 'grp_digital',
+  pol_digital_id: 'grp_digital',
+  sol_digital_identity: 'grp_digital',
+  future_digital_id_abuse: 'grp_digital',
 
   // Blind spot additions
   fiscal_drag: 'grp_costliving',
@@ -2691,6 +2733,13 @@ export const policyPopularity = {
     party_libdem: 'mixed',
   },
   pol_vpn_ip_bill: {
+    party_labour: 'support',
+    party_conservative: 'mixed',
+    party_reform: 'mixed',
+    party_green: 'oppose',
+    party_libdem: 'oppose',
+  },
+  pol_digital_id: {
     party_labour: 'support',
     party_conservative: 'mixed',
     party_reform: 'mixed',
