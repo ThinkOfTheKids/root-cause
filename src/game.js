@@ -61,12 +61,14 @@ function injectStyles() {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto 1fr 1fr;
   gap: 12px;
-  height: 100%;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
   padding: 12px;
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: #eee;
-  overflow: auto;
+  overflow: hidden;
 }
 
 /* ── Timeline bar ── */
@@ -115,6 +117,7 @@ function injectStyles() {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  min-height: 0;
 }
 .game-policy-card h3 {
   margin: 0 0 8px;
