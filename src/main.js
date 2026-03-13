@@ -207,14 +207,14 @@ const cy = cytoscape({
     {
       selector: 'edge.causes',
       style: {
-        'line-color': '#e6762288',
+        'line-color': 'rgba(230,118,34,0.53)',
         'target-arrow-color': '#e67622',
       },
     },
     {
       selector: 'edge.solves',
       style: {
-        'line-color': '#2ecc7188',
+        'line-color': 'rgba(46,204,113,0.53)',
         'target-arrow-color': '#2ecc71',
         'line-style': 'dashed',
       },
@@ -222,7 +222,7 @@ const cy = cytoscape({
     {
       selector: 'edge.implements',
       style: {
-        'line-color': '#3498db88',
+        'line-color': 'rgba(52,152,219,0.53)',
         'target-arrow-color': '#3498db',
         'line-style': 'dashed',
       },
@@ -230,7 +230,7 @@ const cy = cytoscape({
     {
       selector: 'edge.risks',
       style: {
-        'line-color': '#8e44ad88',
+        'line-color': 'rgba(142,68,173,0.53)',
         'target-arrow-color': '#8e44ad',
         'line-style': 'dashed',
       },
@@ -358,34 +358,37 @@ const cy = cytoscape({
     gravity: 0.4,
     numIter: 2500,
     padding: 60,
-    stop: function() {
-      // Rearrange children within each group into a circle
-      cy.nodes('.group').forEach(group => {
-        const children = group.children().filter(':visible');
-        if (children.length === 0) return;
-
-        const bb = children.boundingBox();
-        const cx = (bb.x1 + bb.x2) / 2;
-        const cy_center = (bb.y1 + bb.y2) / 2;
-
-        const radius = Math.max(80, children.length * 22);
-
-        children.forEach((child, i) => {
-          const angle = (2 * Math.PI * i) / children.length - Math.PI / 2;
-          child.position({
-            x: cx + radius * Math.cos(angle),
-            y: cy_center + radius * Math.sin(angle),
-          });
-        });
-      });
-
-      // Reveal graph now that layout is settled
-      document.getElementById('cy').classList.add('settled');
-      cy.fit(undefined, 60);
-    },
+    stop: function() {},
   },
   minZoom: 0.15,
   maxZoom: 3,
+});
+
+// After layout settles, rearrange groups and reveal
+cy.one('layoutstop', () => {
+  cy.nodes('.group').forEach(group => {
+    const children = group.children().filter(':visible');
+    if (children.length === 0) return;
+
+    const bb = children.boundingBox();
+    const centerX = (bb.x1 + bb.x2) / 2;
+    const centerY = (bb.y1 + bb.y2) / 2;
+
+    const radius = Math.max(80, children.length * 22);
+
+    children.forEach((child, i) => {
+      const angle = (2 * Math.PI * i) / children.length - Math.PI / 2;
+      child.position({
+        x: centerX + radius * Math.cos(angle),
+        y: centerY + radius * Math.sin(angle),
+      });
+    });
+  });
+
+  cy.fit(undefined, 60);
+  document.getElementById('cy').classList.add('settled');
+  const loader = document.getElementById('loading');
+  if (loader) loader.remove();
 });
 
 // === Trail collection ===
