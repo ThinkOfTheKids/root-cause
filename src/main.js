@@ -393,23 +393,63 @@ cy.layout({
 
 // === Trail collection ===
 
+// Influence threshold: only follow the top branches that account for this
+// fraction of total influence at each node (prevents everything lighting up)
+const INFLUENCE_THRESHOLD = 0.8;
+
 function getUpstreamTrail(nodeId, visitedNodes = new Set(), trailEdges = new Set()) {
   if (visitedNodes.has(nodeId)) return { nodes: visitedNodes, edges: trailEdges };
   visitedNodes.add(nodeId);
-  cy.edges(`[target = "${nodeId}"][label = "causes"]`).forEach(edge => {
-    trailEdges.add(edge.id());
-    getUpstreamTrail(edge.source().id(), visitedNodes, trailEdges);
+
+  const incoming = cy.edges(`[target = "${nodeId}"][label = "causes"]`);
+  if (incoming.length === 0) return { nodes: visitedNodes, edges: trailEdges };
+
+  // Rank incoming causes by the weight of their source node
+  const ranked = [];
+  incoming.forEach(edge => {
+    const srcId = edge.source().id();
+    ranked.push({ edge, srcId, w: weights[srcId] || 0 });
   });
+  ranked.sort((a, b) => b.w - a.w);
+
+  const totalW = ranked.reduce((s, r) => s + r.w + 1, 0);
+  let accumulated = 0;
+
+  for (const r of ranked) {
+    if (accumulated >= INFLUENCE_THRESHOLD * totalW && ranked.length > 1) break;
+    accumulated += r.w + 1;
+    trailEdges.add(r.edge.id());
+    getUpstreamTrail(r.srcId, visitedNodes, trailEdges);
+  }
+
   return { nodes: visitedNodes, edges: trailEdges };
 }
 
 function getDownstreamTrail(nodeId, visitedNodes = new Set(), trailEdges = new Set()) {
   if (visitedNodes.has(nodeId)) return { nodes: visitedNodes, edges: trailEdges };
   visitedNodes.add(nodeId);
-  cy.edges(`[source = "${nodeId}"][label = "causes"]`).forEach(edge => {
-    trailEdges.add(edge.id());
-    getDownstreamTrail(edge.target().id(), visitedNodes, trailEdges);
+
+  const outgoing = cy.edges(`[source = "${nodeId}"][label = "causes"]`);
+  if (outgoing.length === 0) return { nodes: visitedNodes, edges: trailEdges };
+
+  // Rank outgoing targets by their weight (downstream impact)
+  const ranked = [];
+  outgoing.forEach(edge => {
+    const tgtId = edge.target().id();
+    ranked.push({ edge, tgtId, w: weights[tgtId] || 0 });
   });
+  ranked.sort((a, b) => b.w - a.w);
+
+  const totalW = ranked.reduce((s, r) => s + r.w + 1, 0);
+  let accumulated = 0;
+
+  for (const r of ranked) {
+    if (accumulated >= INFLUENCE_THRESHOLD * totalW && ranked.length > 1) break;
+    accumulated += r.w + 1;
+    trailEdges.add(r.edge.id());
+    getDownstreamTrail(r.tgtId, visitedNodes, trailEdges);
+  }
+
   return { nodes: visitedNodes, edges: trailEdges };
 }
 
