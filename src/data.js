@@ -1401,6 +1401,10 @@ export const nodes = [
   { id: 'pol_water_special_measures', label: 'Water Special\nMeasures Act', type: 'policy', status: 'active', description: 'Regulates executive pay/bonuses, increases Ofwat powers. Critics say it doesn\'t go far enough without structural ownership change.', sources: ['UK Parliament', 'Ofwat'] },
   { id: 'future_water_infrastructure_collapse', label: 'Water Infrastructure\nCollapse', type: 'future_problem', horizon: 'decade', description: 'Without massive investment, Victorian-era water/sewage infrastructure faces systemic failure. Combined sewer overflows already at crisis levels.', sources: ['National Infrastructure Commission', 'Water UK'] },
 
+  // --- Electoral Reform ---
+  { id: 'pol_proportional_representation', label: 'Proportional\nRepresentation', type: 'policy', status: 'proposed', description: 'Replace First Past the Post with a proportional system such as STV or MMP. 45% of the UK public support PR. Countries with PR see higher turnout (+7% avg), more diverse parliaments, and policy closer to median voter preferences. Would fundamentally reshape UK politics — smaller parties gain seats, coalitions become the norm.', politicalDifficulty: 'very hard', economicDifficulty: 'easy', practicality: 3, sideEffectRisk: 'high', riskDetail: 'Permanent coalition governments; potential instability; turkeys voting for Christmas — major parties unlikely to pass it', sources: ['Electoral Reform Society', 'Make Votes Matter', 'IPPR'] },
+  { id: 'future_coalition_instability', label: 'Coalition\nInstability', type: 'future_problem', horizon: 'decade', description: 'PR systems often produce coalition governments. While these can be more representative, they can also lead to legislative gridlock, frequent elections, and policy paralysis — as seen in Italy, Israel, and Belgium.', sources: ['Political Studies Association', 'Electoral Reform Society'] },
+
   // --- Gig Economy / Insecure Work ---
   { id: 'gig_economy', label: 'Gig Economy &\nInsecure Work', type: 'cause', description: '4.4m+ workers in insecure employment. Zero-hours contracts, bogus self-employment, no sick pay/pensions/holiday. Drives in-work poverty and prevents savings.', sources: ['TUC', 'Resolution Foundation', 'ONS'] },
   { id: 'sol_employment_rights', label: 'Employment\nRights Reform', type: 'solution', description: 'Ban exploitative zero-hours contracts, extend employment rights to gig workers (sick pay, holiday, pension contributions). Strengthen enforcement via single enforcement body.', politicalDifficulty: 'medium', economicDifficulty: 'medium', practicality: 4, sideEffectRisk: 'medium', riskDetail: 'Business cost increases; may reduce labour market flexibility; enforcement challenges', sources: ['TUC', 'CIPD', 'Low Pay Commission'] },
@@ -2061,6 +2065,11 @@ export const edges = [
   { source: 'pol_water_special_measures', target: 'sol_water_infrastructure', label: 'implements' },
   { source: 'pol_water_special_measures', target: 'future_water_infrastructure_collapse', label: 'risks' },
 
+  // --- Electoral Reform ---
+  { source: 'pol_proportional_representation', target: 'sol_proportional_representation', label: 'implements' },
+  { source: 'pol_proportional_representation', target: 'future_coalition_instability', label: 'risks' },
+  { source: 'future_coalition_instability', target: 'democratic_deficit', label: 'causes' },
+
   // --- Gig Economy / Insecure Work ---
   { source: 'gig_economy', target: 'wage_stagnation', label: 'causes' },
   { source: 'gig_economy', target: 'mental_health_crisis', label: 'causes' },
@@ -2567,6 +2576,10 @@ export const nodeGroups = {
   pol_water_special_measures: 'grp_costliving',
   future_water_infrastructure_collapse: 'grp_costliving',
 
+  // Electoral Reform
+  pol_proportional_representation: 'grp_democracy',
+  future_coalition_instability: 'grp_democracy',
+
   // Economy additions
   gig_economy: 'grp_economy',
   sol_employment_rights: 'grp_economy',
@@ -2767,6 +2780,13 @@ export const policyPopularity = {
     party_conservative: 'mixed',
     party_reform: 'mixed',
     party_green: 'oppose',
+    party_libdem: 'support',
+  },
+  pol_proportional_representation: {
+    party_labour: 'oppose',
+    party_conservative: 'oppose',
+    party_reform: 'support',
+    party_green: 'support',
     party_libdem: 'support',
   },
 };

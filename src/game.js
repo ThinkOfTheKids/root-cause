@@ -656,12 +656,25 @@ const SEAT_EFFICIENCY = {
   party_green: 0.2,
 };
 
-function estimateSeats(polls) {
+function estimateSeats(polls, usePR = false) {
   const sorted = parties.map(p => ({ id: p.id, pct: polls[p.id] }))
     .sort((a, b) => b.pct - a.pct);
   const leader = sorted[0];
 
-  // Calculate effective vote share (vote % × efficiency)
+  if (usePR) {
+    // Proportional representation — seats roughly match vote share
+    const totalPct = sorted.reduce((s, p) => s + p.pct, 0);
+    const seats = {};
+    let allocated = 0;
+    for (const p of sorted) {
+      seats[p.id] = Math.max(1, Math.round(TOTAL_SEATS * (p.pct / totalPct)));
+      allocated += seats[p.id];
+    }
+    if (allocated !== TOTAL_SEATS) seats[leader.id] += TOTAL_SEATS - allocated;
+    return seats;
+  }
+
+  // FPTP: calculate effective vote share (vote % × efficiency)
   const effective = {};
   let effTotal = 0;
   for (const p of sorted) {
@@ -805,6 +818,7 @@ export function initGame(container) {
       policyQueue: shuffled,
       problemSeverity: baseline,
       baselineSeverity: { ...baseline },
+      prActive: false,
       finished: false,
     };
   }
@@ -989,6 +1003,7 @@ export function initGame(container) {
 
     if (choice === 'implement') {
       state.activePolicies.push(policy.id);
+      if (policy.id === 'pol_proportional_representation') state.prActive = true;
       state.polls = applyImplement(state.polls, policy.id, severityChanges);
     } else if (choice === 'reject') {
       state.rejectedPolicies.push(policy.id);
@@ -1021,9 +1036,11 @@ export function initGame(container) {
   }
 
   function showElection() {
-    const seats = estimateSeats(state.polls);
+    const seats = estimateSeats(state.polls, state.prActive);
     const winnerId = Object.entries(seats).sort((a, b) => b[1] - a[1])[0][0];
     const winner = partyMap[winnerId];
+
+    const electionSystem = state.prActive ? 'Proportional Representation' : 'First Past the Post';
 
     const majority = seats[winnerId] > TOTAL_SEATS / 2;
     const resultLabel = majority
@@ -1062,6 +1079,7 @@ export function initGame(container) {
         <h2 style="color:${winner.color}">🗳️ General Election ${QUARTER_LABELS[TOTAL_TURNS] || '2029'}</h2>
         <p class="election-player-result" style="color:${playerColor}">${playerMsg}</p>
         <p class="winner-label">${resultLabel}</p>
+        <p style="font-size:12px;color:#888;margin-bottom:12px">Electoral system: ${electionSystem}</p>
         <div class="election-results-grid">${rows}</div>
         <button class="btn-play-again">🔄 Play Again</button>
       </div>
