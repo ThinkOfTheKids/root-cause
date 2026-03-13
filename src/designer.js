@@ -502,9 +502,12 @@ function renderProblemDashboard() {
         <div class="severity-composite">
           <span class="problem-bar-label">Severity</span>
           <div class="severity-track">
-            <div class="severity-baseline" style="width:${severityPct}%"></div>
-            <div class="severity-residual" style="width:${residualPct}%"></div>
-            ${cov.hindrance > 0 ? `<div class="severity-hindrance" style="left:${severityPct}%; width:${hindrancePct}%"></div>` : ''}
+            ${cov.coverage > 0 || cov.hindrance > 0
+              ? `<div class="severity-baseline" style="width:${severityPct}%"></div>
+                 <div class="severity-residual" style="width:${residualPct}%"></div>
+                 ${cov.hindrance > 0 ? `<div class="severity-hindrance" style="left:${severityPct}%; width:${hindrancePct}%"></div>` : ''}`
+              : `<div class="severity-residual" style="width:${severityPct}%"></div>`
+            }
           </div>
           <span class="problem-bar-value">${cov.coverage > 0 || cov.hindrance > 0 ? `${severityPct.toFixed(0)}→${residualPct.toFixed(0)}%` : `${severityPct.toFixed(0)}%`}</span>
         </div>
