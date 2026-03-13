@@ -175,6 +175,62 @@ function injectStyles() {
 .game-policy-card .impact-item.positive { color: #2ecc71; }
 .game-policy-card .impact-item.negative { color: #e74c3c; }
 
+/* ── Policy picker ── */
+.policy-picker {
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #2a2a4a;
+}
+.policy-picker h4 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.policy-pick-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+.policy-pick-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  cursor: pointer;
+  font-size: 11px;
+  color: #bbb;
+  transition: background 0.15s, border-color 0.15s;
+}
+.policy-pick-item:hover {
+  background: #252548;
+  border-color: #444;
+}
+.policy-pick-item.selected {
+  background: #252548;
+  border-color: #5a5a8a;
+  color: #fff;
+  font-weight: 600;
+}
+.pick-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.pick-name {
+  white-space: nowrap;
+}
+.policy-detail h3 {
+  margin: 12px 0 8px;
+}
+
 .game-actions {
   margin-top: 16px;
   display: flex;
@@ -819,6 +875,7 @@ export function initGame(container) {
       problemSeverity: baseline,
       baselineSeverity: { ...baseline },
       prActive: false,
+      selectedPolicy: null,
       finished: false,
     };
   }
@@ -917,11 +974,35 @@ export function initGame(container) {
       return;
     }
 
-    const policy = state.policyQueue[state.turn % state.policyQueue.length];
-    if (!policy) {
-      policyCard.innerHTML = '<p class="waiting-msg">No more policies to consider.</p>';
+    // Get available policies (not yet implemented or rejected)
+    const available = policyNodes.filter(p =>
+      !state.activePolicies.includes(p.id) && !state.rejectedPolicies.includes(p.id)
+    );
+
+    if (!available.length) {
+      policyCard.innerHTML = '<p class="waiting-msg">All policies have been considered.</p>' +
+        '<div class="game-actions"><button class="btn-skip">⏭ Skip Quarter</button></div>';
+      policyCard.querySelector('.btn-skip').onclick = () => handleChoice('skip', null);
       return;
     }
+
+    // Use selected policy or default to first available
+    const policy = state.selectedPolicy && available.find(p => p.id === state.selectedPolicy)
+      ? available.find(p => p.id === state.selectedPolicy)
+      : available[0];
+    state.selectedPolicy = policy.id;
+
+    // Build compact policy picker list
+    const pickerItems = available.map(p => {
+      const st = policyPopularity[p.id] || {};
+      const playerStance = st[playerParty] || 'mixed';
+      const dotColor = playerStance === 'support' ? '#2ecc71' : playerStance === 'oppose' ? '#e74c3c' : '#f1c40f';
+      const selected = p.id === policy.id;
+      return `<div class="policy-pick-item${selected ? ' selected' : ''}" data-id="${p.id}">
+        <span class="pick-dot" style="background:${dotColor}"></span>
+        <span class="pick-name">${cleanLabel(p.label)}</span>
+      </div>`;
+    }).join('');
 
     const stances = policyPopularity[policy.id] || {};
     const { helps, hinders } = computePolicyImpacts(policy.id);
@@ -946,22 +1027,36 @@ export function initGame(container) {
     }).join('');
 
     policyCard.innerHTML = `
-      <h3>📜 ${cleanLabel(policy.label)}</h3>
-      <p class="policy-desc">${policy.description || 'No description available.'}</p>
-      <div class="stances-row">${stanceBadges}</div>
-      ${(helps.length || hinders.length) ? `
-        <div class="impacts-section">
-          <h4>Expected Impacts</h4>
-          ${helpItems}
-          ${hinderItems}
+      <div class="policy-picker">
+        <h4>📋 Select Policy (${available.length} remaining)</h4>
+        <div class="policy-pick-list">${pickerItems}</div>
+      </div>
+      <div class="policy-detail">
+        <h3>📜 ${cleanLabel(policy.label)}</h3>
+        <p class="policy-desc">${policy.description || 'No description available.'}</p>
+        <div class="stances-row">${stanceBadges}</div>
+        ${(helps.length || hinders.length) ? `
+          <div class="impacts-section">
+            <h4>Expected Impacts</h4>
+            ${helpItems}
+            ${hinderItems}
+          </div>
+        ` : ''}
+        <div class="game-actions">
+          <button class="btn-implement">✅ Implement</button>
+          <button class="btn-reject">❌ Reject</button>
+          <button class="btn-skip">⏭ Skip Quarter</button>
         </div>
-      ` : ''}
-      <div class="game-actions">
-        <button class="btn-implement">✅ Implement</button>
-        <button class="btn-reject">❌ Reject</button>
-        <button class="btn-skip">⏭ Skip Quarter</button>
       </div>
     `;
+
+    // Policy picker click handlers
+    policyCard.querySelectorAll('.policy-pick-item').forEach(item => {
+      item.addEventListener('click', () => {
+        state.selectedPolicy = item.dataset.id;
+        renderPolicyCard();
+      });
+    });
 
     policyCard.querySelector('.btn-implement').onclick = () => handleChoice('implement', policy);
     policyCard.querySelector('.btn-reject').onclick = () => handleChoice('reject', policy);
@@ -995,22 +1090,28 @@ export function initGame(container) {
 
   // ── Game logic ──
   function handleChoice(choice, policy) {
-    const severityChanges = computeSeverityChanges(
-      choice === 'implement'
-        ? [...state.activePolicies, policy.id]
-        : state.activePolicies
-    );
+    if (policy) {
+      const severityChanges = computeSeverityChanges(
+        choice === 'implement'
+          ? [...state.activePolicies, policy.id]
+          : state.activePolicies
+      );
 
-    if (choice === 'implement') {
-      state.activePolicies.push(policy.id);
-      if (policy.id === 'pol_proportional_representation') state.prActive = true;
-      state.polls = applyImplement(state.polls, policy.id, severityChanges);
-    } else if (choice === 'reject') {
-      state.rejectedPolicies.push(policy.id);
-      state.polls = applyReject(state.polls, policy.id);
+      if (choice === 'implement') {
+        state.activePolicies.push(policy.id);
+        if (policy.id === 'pol_proportional_representation') state.prActive = true;
+        state.polls = applyImplement(state.polls, policy.id, severityChanges);
+      } else if (choice === 'reject') {
+        state.rejectedPolicies.push(policy.id);
+        state.polls = applyReject(state.polls, policy.id);
+      } else {
+        state.polls = applySkip(state.polls);
+      }
     } else {
       state.polls = applySkip(state.polls);
     }
+
+    state.selectedPolicy = null;
 
     // Update problem severities from all active policies
     const allChanges = computeSeverityChanges(state.activePolicies);
